@@ -14,13 +14,11 @@ final readonly class HomeController
         private Twig $twig
     )
     {
-
     }
 
     public function __invoke(Request $httpRequest, Response $response): Response
     {
         $data = $this->getHomePageService->__invoke();
-
         return $this->twig->render(
             $response,
             "home.twig",
