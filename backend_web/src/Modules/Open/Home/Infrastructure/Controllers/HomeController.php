@@ -25,7 +25,6 @@ final readonly class HomeController
         $response->getBody()->write(
             json_encode($this->getHomePageService->__invoke())
         );
-        dd($response);
         return $response;
     }
 }
