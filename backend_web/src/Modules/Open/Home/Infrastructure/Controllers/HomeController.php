@@ -22,7 +22,7 @@ final readonly class HomeController
         return $this->twig->render(
             $response,
             "home.twig",
-            $data
+            ["data" => $data]
         );
     }
 }
