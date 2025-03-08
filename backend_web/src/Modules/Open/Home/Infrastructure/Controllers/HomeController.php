@@ -20,6 +20,11 @@ final readonly class HomeController
     public function __invoke(Request $httpRequest, Response $response): Response
     {
         $data = $this->getHomePageService->__invoke();
-        return $this->twig->render($response, "home.twig", $data);
+
+        return $this->twig->render(
+            $response,
+            "home.twig",
+            $data
+        );
     }
 }
