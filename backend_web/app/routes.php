@@ -10,16 +10,22 @@ use Slim\Interfaces\RouteCollectorProxyInterface as Group;
 use App\Application\Actions\User\ListUsersAction;
 use App\Application\Actions\User\ViewUserAction;
 
+use App\Modules\Open\Home\Infrastructure\Controllers\HomeController;
+
 return function (App $app) {
     $app->options("/{routes:.*}", function (Request $request, Response $response) {
         // CORS Pre-Flight OPTIONS Request Handler
         return $response;
     });
 
+    /*
     $app->get("/", function (Request $request, Response $response) {
         $response->getBody()->write("hello world!");
         return $response;
     });
+    */
+
+    $app->get("/", HomeController::class);
 
     $app->group("/users", function (Group $group) {
         $group->get("", ListUsersAction::class);
