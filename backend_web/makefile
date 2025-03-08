@@ -12,5 +12,10 @@ gitpush: ## git push m=any message
 	clear;
 	git add .; git commit -m "$(m)"; git push;
 
+gp: ## git push m=any message
+	clear;
+	git add .; git commit -m "$(m)"; git push;
+
 run-app: ## start serving app in localhost:8181
 	cd backend_web; php -S localhost:8181 -t public
+
