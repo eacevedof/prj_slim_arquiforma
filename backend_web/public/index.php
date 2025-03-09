@@ -40,8 +40,9 @@ function load_dotenv($path): void
 }
 
 load_dotenv(PATH_ROOT . "/.env");
-getenv("APP_ENV") ?: putenv("APP_ENV=development");
-$debug = getenv("APP_ENV") === "development";
+getenv("APP_ENV") ?: putenv("APP_ENV=production");
+
+$debug = getenv("APP_ENV") !== "production";
 error_reporting(0);
 if ($debug) {
     ini_set("display_errors", "1");
