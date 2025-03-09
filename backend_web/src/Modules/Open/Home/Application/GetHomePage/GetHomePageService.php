@@ -10,14 +10,17 @@ final readonly class GetHomePageService
     {
         return [
             "title" => "ARQUIFORMA Y OBRAS EN GENERAL SL",
-            "info" => "ARQUIFORMA Y OBRAS EN GENERAL SL
-                        B-56883473
-                        C/ GENERAL RICARDOS 105
-                        28019 Madrid - España
-                        ",
+            "info" => "
+            ARQUIFORMA Y OBRAS EN GENERAL SL
+            
+            arquiforma.es
+            
+            C/ GENERAL RICARDOS 105                        
+            28019 Madrid - España
+            ",
             "meta_description" => "ARQUIFORMA Y OBRAS EN GENERAL SL is a company based in Madrid, Spain, specializing in general construction works.",
-            "meta_keywords" => "construction, general works, Madrid, Spain",
-            "meta_author" => "ARQUIFORMA Y OBRAS EN GENERAL SL"
+            "meta_keywords" => "trabajos de construcción en general, Madrid, Spain",
+            "meta_author" => "Arquiforma y Obras en General SL",
         ];
     }
 }

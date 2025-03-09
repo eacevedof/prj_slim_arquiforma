@@ -1,6 +1,25 @@
+#div-logo {
+    width: 600px;
+    margin: 0 auto;
+    padding: 0;
+    text-align: center; /* Add this line to center the content inside the div */
+}
+
 p {
-    color: red;
+    width: 600px;
     font-family: "Arial Narrow";
-    font-size: 20px;
+    font-size: 15px;
     font-weight: bold;
+    text-align: center; /* Center text horizontally */
+    margin: 0 auto; /* Center the paragraph itself */
+    margin-bottom: 10px;
+}
+
+#remote-addr {
+    width: 600px;
+    font-family: "Arial Narrow";
+    color: darkgrey;
+    font-size: 12px;
+    text-align: center; /* Center text horizontally */
+    margin: 0 auto; /* Center the paragraph itself */
 }

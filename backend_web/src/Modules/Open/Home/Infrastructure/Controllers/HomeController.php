@@ -29,10 +29,10 @@ final class HomeController extends AbstractController
     public function __invoke(Request $httpRequest): Response
     {
         try {
-            $data = $this->getHomePageService->__invoke();
+            $seo = $this->getHomePageService->__invoke();
             return $this->renderView(
                 "view-home",
-                ["seo" => $data]
+                ["seo" => $seo]
             );
         }
         catch (HomeException $e) {

@@ -1,4 +1,7 @@
 <?php
+/**
+ * @var \App\Modules\Shared\Infrastructure\Components\TplReader $this
+ */
 ?>
 <!DOCTYPE html>
 <html lang="es-ES">
@@ -14,8 +17,22 @@
     <script src="/modules/open/home/home.js"></script>
 </head>
 <body>
-    <p><?= $seo["info"] ?? "" ?></p>
+
+    <div id="div-logo">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="-15 50 400 100">
+            <text x="10" y="100" font-family="serif" font-size="50" font-weight="bold" fill="red" stroke="black" stroke-width="2">
+                ARQUIFORMA
+            </text>
+            <text x="120" y="130" font-family="sans-serif" font-size="10" fill="black">CONSTRUCCIÓN Y OBRAS</text>
+        </svg>
+    </div>
+
+    <p><?= $this->invisibleCharsToHtml($seo["info"] ?? "") ?></p>
+    <br/>
     <p><?= date("Y-m-d H:i:s"); ?></p>
-    <p><?= $_SERVER["REMOTE_ADDR"]; ?></p>
+    <br/>
+    <p id="remote-addr">
+        <?= $_SERVER["REMOTE_ADDR"]; ?>
+    </p>
 </body>
 </html>
