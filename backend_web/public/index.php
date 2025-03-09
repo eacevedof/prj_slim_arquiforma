@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-use App\Application\Handlers\HttpErrorHandler;
-use App\Application\Handlers\ShutdownHandler;
-use App\Application\ResponseEmitter\ResponseEmitter;
-use App\Application\Settings\SettingsInterface;
 use DI\ContainerBuilder;
 use Slim\Factory\AppFactory;
 use Slim\Factory\ServerRequestCreatorFactory;
 
-require __DIR__ . '/../vendor/autoload.php';
+use App\Slim\Application\Handlers\HttpErrorHandler;
+use App\Slim\Application\Handlers\ShutdownHandler;
+use App\Slim\Application\ResponseEmitter\ResponseEmitter;
+use App\Slim\Application\Settings\SettingsInterface;
 
-// Instantiate PHP-DI ContainerBuilder
+require __DIR__ . "/../vendor/autoload.php";
+
 $containerBuilder = new ContainerBuilder();
 
 if (false) { // Should be set to true in production
@@ -47,7 +47,7 @@ $middleware($app);
 $routes = require __DIR__ . '/../app/routes.php';
 $routes($app);
 
-/** @var SettingsInterface $settings */
+/** @var \App\Slim\Application\Settings\SettingsInterface $settings */
 $settings = $container->get(SettingsInterface::class);
 
 $displayErrorDetails = $settings->get('displayErrorDetails');

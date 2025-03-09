@@ -2,18 +2,21 @@
 
 declare(strict_types=1);
 
-use App\Application\Settings\SettingsInterface;
-use DI\ContainerBuilder;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
-use Monolog\Processor\UidProcessor;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
-use Slim\Views\Twig;
-use Twig\Loader\FilesystemLoader;
+use Monolog\Handler\StreamHandler;
+use Monolog\Processor\UidProcessor;
+use Monolog\Logger;
+
+use DI\ContainerBuilder;
+
+use App\Slim\Application\Settings\SettingsInterface;
+use App\Modules\Shared\Infrastructure\Components\TplReader;
+
 
 return function (ContainerBuilder $containerBuilder) {
     $containerBuilder->addDefinitions([
+
         LoggerInterface::class => function (ContainerInterface $c) {
             $settings = $c->get(SettingsInterface::class);
 
@@ -29,9 +32,13 @@ return function (ContainerBuilder $containerBuilder) {
             return $logger;
         },
 
-        Twig::class => function () {
-            $loader = new FilesystemLoader(__DIR__ . '/../src/Modules/Views');
-            return new Twig($loader, ['cache' => false]);
+        TplReader::class => function (ContainerInterface $c) {
+            $views = __DIR__ . '/../src/Modules/Views';
+            $cache = __DIR__ . '/../cache';
+            return TplReader::fromPrimitives([
+                "pathViews" => $views,
+                "pathCache" => $cache,
+            ]);
         },
 
     ]);
