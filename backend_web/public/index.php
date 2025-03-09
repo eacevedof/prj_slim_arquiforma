@@ -11,24 +11,52 @@ use App\Slim\Application\Handlers\ShutdownHandler;
 use App\Slim\Application\ResponseEmitter\ResponseEmitter;
 use App\Slim\Application\Settings\SettingsInterface;
 
-require __DIR__ . "/../vendor/autoload.php";
+$slimRoot = __DIR__. "../../";
+$slimRoot = realpath($slimRoot);
+define("PATH_ROOT", $slimRoot);
 
+function load_dotenv($path): void
+{
+    if (!file_exists($path)) {
+        return;
+    }
+
+    $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (strpos(trim($line), "#") === 0) {
+            continue;
+        }
+
+        list($name, $value) = explode("=", $line, 2);
+        $name = trim($name);
+        $value = trim($value);
+
+        if (!array_key_exists($name, $_SERVER) && !array_key_exists($name, $_ENV)) {
+            putenv(sprintf("%s=%s", $name, $value));
+            $_ENV[$name] = $value;
+            $_SERVER[$name] = $value;
+        }
+    }
+}
+load_dotenv(PATH_ROOT . "/.env");
+
+require PATH_ROOT . "/vendor/autoload.php";
 $containerBuilder = new ContainerBuilder();
 
 if (false) { // Should be set to true in production
-	$containerBuilder->enableCompilation(__DIR__ . '/../var/cache');
+	$containerBuilder->enableCompilation(PATH_ROOT . '/var/cache');
 }
 
 // Set up settings
-$settings = require __DIR__ . '/../app/settings.php';
+$settings = require PATH_ROOT . '/app/settings.php';
 $settings($containerBuilder);
 
 // Set up dependencies
-$dependencies = require __DIR__ . '/../app/dependencies.php';
+$dependencies = require PATH_ROOT . '/app/dependencies.php';
 $dependencies($containerBuilder);
 
 // Set up repositories
-$repositories = require __DIR__ . '/../app/repositories.php';
+$repositories = require PATH_ROOT . '/app/repositories.php';
 $repositories($containerBuilder);
 
 // Build PHP-DI Container instance
@@ -40,11 +68,11 @@ $app = AppFactory::create();
 $callableResolver = $app->getCallableResolver();
 
 // Register middleware
-$middleware = require __DIR__ . '/../app/middleware.php';
+$middleware = require PATH_ROOT . '/app/middleware.php';
 $middleware($app);
 
 // Register routes
-$routes = require __DIR__ . '/../app/routes.php';
+$routes = require PATH_ROOT . '/app/routes.php';
 $routes($app);
 
 /** @var \App\Slim\Application\Settings\SettingsInterface $settings */

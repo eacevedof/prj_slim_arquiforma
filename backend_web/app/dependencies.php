@@ -20,21 +20,21 @@ return function (ContainerBuilder $containerBuilder) {
         LoggerInterface::class => function (ContainerInterface $c) {
             $settings = $c->get(SettingsInterface::class);
 
-            $loggerSettings = $settings->get('logger');
-            $logger = new Logger($loggerSettings['name']);
+            $loggerSettings = $settings->get("logger");
+            $logger = new Logger($loggerSettings["name"]);
 
             $processor = new UidProcessor();
             $logger->pushProcessor($processor);
 
-            $handler = new StreamHandler($loggerSettings['path'], $loggerSettings['level']);
+            $handler = new StreamHandler($loggerSettings["path"], $loggerSettings["level"]);
             $logger->pushHandler($handler);
 
             return $logger;
         },
 
         TplReader::class => function (ContainerInterface $c) {
-            $views = __DIR__ . '/../src/Modules/Views';
-            $cache = __DIR__ . '/../cache';
+            $views = __DIR__ . "/../src/Modules/Views";
+            $cache = __DIR__ . "/../cache";
             return TplReader::fromPrimitives([
                 "pathViews" => $views,
                 "pathCache" => $cache,

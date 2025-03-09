@@ -2,7 +2,7 @@
 
 namespace App\Modules\Shared\Infrastructure\Components;
 
-use Exception;
+use App\Modules\Shared\Domain\Exceptions\ComponentException;
 
 final class TplReader
 {
@@ -49,7 +49,7 @@ final class TplReader
         ];
 
         if (!$pathView = $this->getRealPath($paths))
-            $this->throwError("Template not found: $pathTpl");
+            ComponentException::unexpectedErrorOnRequest("Template not found: $pathTpl");
 
         ob_start();
         foreach ($vars as $name => $value)
@@ -67,10 +67,5 @@ final class TplReader
             }
         }
         return "";
-    }
-
-    private function throwError(string $message): void
-    {
-        throw new Exception($message, 500);
     }
 }
