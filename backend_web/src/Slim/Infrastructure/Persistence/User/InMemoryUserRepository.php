@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Infrastructure\Persistence\User;
+namespace App\Slim\Infrastructure\Persistence\User;
 
-use Domain\User\User;
-use Domain\User\UserRepository;
+use App\Slim\Domain\User\User;
+use App\Slim\Domain\User\UserNotFoundException;
+use App\Slim\Domain\User\UserRepository;
 
 class InMemoryUserRepository implements UserRepository
 {
@@ -21,10 +22,10 @@ class InMemoryUserRepository implements UserRepository
     {
         $this->users = $users ?? [
             1 => new User(1, 'bill.gates', 'Bill', 'Gates'),
-            2 => new \Domain\User\User(2, 'steve.jobs', 'Steve', 'Jobs'),
+            2 => new User(2, 'steve.jobs', 'Steve', 'Jobs'),
             3 => new User(3, 'mark.zuckerberg', 'Mark', 'Zuckerberg'),
-            4 => new \Domain\User\User(4, 'evan.spiegel', 'Evan', 'Spiegel'),
-            5 => new \Domain\User\User(5, 'jack.dorsey', 'Jack', 'Dorsey'),
+            4 => new User(4, 'evan.spiegel', 'Evan', 'Spiegel'),
+            5 => new User(5, 'jack.dorsey', 'Jack', 'Dorsey'),
         ];
     }
 
@@ -39,10 +40,10 @@ class InMemoryUserRepository implements UserRepository
     /**
      * {@inheritdoc}
      */
-    public function findUserOfId(int $id): \Domain\User\User
+    public function findUserOfId(int $id): User
     {
         if (!isset($this->users[$id])) {
-            throw new \Domain\User\UserNotFoundException();
+            throw new UserNotFoundException();
         }
 
         return $this->users[$id];

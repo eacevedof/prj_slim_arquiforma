@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Domain\DomainException;
+namespace App\Slim\Domain\DomainException;
 
 class DomainRecordNotFoundException extends DomainException
 {

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Domain\User;
+namespace App\Slim\Domain\User;
 
-use Domain\DomainException\DomainRecordNotFoundException;
+use App\Slim\Domain\DomainException\DomainRecordNotFoundException;
 
 class UserNotFoundException extends DomainRecordNotFoundException
 {

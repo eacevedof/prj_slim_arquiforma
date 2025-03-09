@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Slim\Application\Actions\User;
 
 use App\Slim\Application\Actions\Action;
-use Domain\User\UserRepository;
+use App\Slim\Domain\User\UserRepository;
 use Psr\Log\LoggerInterface;
 
 abstract class UserAction extends Action

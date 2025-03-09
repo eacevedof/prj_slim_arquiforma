@@ -39,11 +39,18 @@ function load_dotenv($path): void
     }
 }
 load_dotenv(PATH_ROOT . "/.env");
+getenv("APP_ENV") ?: putenv("APP_ENV=development");
+$debug = getenv("APP_ENV") === "development";
+if ($debug) {
+    ini_set("display_errors", "1");
+    ini_set("display_startup_errors", "1");
+    error_reporting(E_ALL);
+}
 
 require PATH_ROOT . "/vendor/autoload.php";
 $containerBuilder = new ContainerBuilder();
 
-if (false) { // Should be set to true in production
+if ($debug) { // Should be set to true in production
 	$containerBuilder->enableCompilation(PATH_ROOT . '/var/cache');
 }
 
