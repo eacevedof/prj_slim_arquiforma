@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Domain\User;
 
-use App\Domain\User\User;
+use Domain\User\User;
 use Tests\TestCase;
 
 class UserTest extends TestCase
@@ -29,7 +29,7 @@ class UserTest extends TestCase
      */
     public function testGetters(int $id, string $username, string $firstName, string $lastName)
     {
-        $user = new User($id, $username, $firstName, $lastName);
+        $user = new \Domain\User\User($id, $username, $firstName, $lastName);
 
         $this->assertEquals($id, $user->getId());
         $this->assertEquals($username, $user->getUsername());

@@ -8,8 +8,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\App;
 use Slim\Interfaces\RouteCollectorProxyInterface as Group;
 
-use App\Application\Actions\User\ListUsersAction;
-use App\Application\Actions\User\ViewUserAction;
+use App\Slim\Application\Actions\User\ListUsersAction;
+use App\Slim\Application\Actions\User\ViewUserAction;
 
 use App\Modules\Open\Home\Infrastructure\Controllers\HomeController;
 

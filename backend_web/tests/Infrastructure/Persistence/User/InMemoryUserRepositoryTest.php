@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Infrastructure\Persistence\User;
 
-use App\Domain\User\User;
-use App\Domain\User\UserNotFoundException;
-use App\Infrastructure\Persistence\User\InMemoryUserRepository;
+use Domain\User\User;
+use Domain\User\UserNotFoundException;
 use Tests\TestCase;
 
 class InMemoryUserRepositoryTest extends TestCase
@@ -15,7 +14,7 @@ class InMemoryUserRepositoryTest extends TestCase
     {
         $user = new User(1, 'bill.gates', 'Bill', 'Gates');
 
-        $userRepository = new InMemoryUserRepository([1 => $user]);
+        $userRepository = new \Infrastructure\Persistence\User\InMemoryUserRepository([1 => $user]);
 
         $this->assertEquals([$user], $userRepository->findAll());
     }
@@ -30,7 +29,7 @@ class InMemoryUserRepositoryTest extends TestCase
             5 => new User(5, 'jack.dorsey', 'Jack', 'Dorsey'),
         ];
 
-        $userRepository = new InMemoryUserRepository();
+        $userRepository = new \Infrastructure\Persistence\User\InMemoryUserRepository();
 
         $this->assertEquals(array_values($users), $userRepository->findAll());
     }
@@ -39,14 +38,14 @@ class InMemoryUserRepositoryTest extends TestCase
     {
         $user = new User(1, 'bill.gates', 'Bill', 'Gates');
 
-        $userRepository = new InMemoryUserRepository([1 => $user]);
+        $userRepository = new \Infrastructure\Persistence\User\InMemoryUserRepository([1 => $user]);
 
         $this->assertEquals($user, $userRepository->findUserOfId(1));
     }
 
     public function testFindUserOfIdThrowsNotFoundException()
     {
-        $userRepository = new InMemoryUserRepository([]);
+        $userRepository = new \Infrastructure\Persistence\User\InMemoryUserRepository([]);
         $this->expectException(UserNotFoundException::class);
         $userRepository->findUserOfId(1);
     }

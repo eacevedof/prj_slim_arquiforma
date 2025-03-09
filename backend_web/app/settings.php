@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-use App\Application\Settings\Settings;
-use App\Application\Settings\SettingsInterface;
-use DI\ContainerBuilder;
 use Monolog\Logger;
+use DI\ContainerBuilder;
+
+use App\Slim\Application\Settings\Settings;
+use App\Slim\Application\Settings\SettingsInterface;
 
 return function (ContainerBuilder $containerBuilder) {
 
