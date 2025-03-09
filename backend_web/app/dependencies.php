@@ -33,8 +33,8 @@ return function (ContainerBuilder $containerBuilder) {
         },
 
         TplReader::class => function (ContainerInterface $c) {
-            $views = __DIR__ . "/../src/Modules/Views";
-            $cache = __DIR__ . "/../cache";
+            $views = PATH_ROOT . "/src/Modules/Views";
+            $cache = PATH_ROOT . "/var/cache";
             return TplReader::fromPrimitives([
                 "pathViews" => $views,
                 "pathCache" => $cache,

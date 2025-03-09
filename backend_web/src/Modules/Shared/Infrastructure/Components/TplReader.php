@@ -29,12 +29,11 @@ final class TplReader
         array_pop($parts); array_pop($parts);
 
         $viewFolder = implode(DIRECTORY_SEPARATOR, $parts).DIRECTORY_SEPARATOR."Views";
-        $thisDir = realpath(__DIR__."/../../../../");
 
-        $pathViewsFolder = $thisDir.DIRECTORY_SEPARATOR.$viewFolder;
+        $pathViewsFolder = PATH_ROOT.DIRECTORY_SEPARATOR."src/".$viewFolder;
         $pathViewsFolder = realpath($pathViewsFolder);
         if (!is_dir($pathViewsFolder))
-            $this->throwError("Views folder not found: $pathViewsFolder");
+            ComponentException::unexpectedErrorOnRequest("Views folder not found: $pathViewsFolder");
 
         $this->pathViews = $pathViewsFolder;
     }
@@ -68,4 +67,12 @@ final class TplReader
         }
         return "";
     }
+
+    public function invisibleCharsToHtml(string $text): string
+    {
+        $text = str_replace("\n", "<br>", $text);
+        $text = str_replace("\t", "&nbsp;&nbsp;&nbsp;&nbsp;", $text);
+        return $text;
+    }
+
 }
