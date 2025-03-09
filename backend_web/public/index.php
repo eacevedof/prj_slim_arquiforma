@@ -11,7 +11,7 @@ use App\Slim\Application\Handlers\ShutdownHandler;
 use App\Slim\Application\ResponseEmitter\ResponseEmitter;
 use App\Slim\Application\Settings\SettingsInterface;
 
-$slimRoot = __DIR__. "../../";
+$slimRoot = __DIR__. "/../";
 $slimRoot = realpath($slimRoot);
 define("PATH_ROOT", $slimRoot);
 
@@ -38,9 +38,11 @@ function load_dotenv($path): void
         }
     }
 }
+
 load_dotenv(PATH_ROOT . "/.env");
 getenv("APP_ENV") ?: putenv("APP_ENV=development");
 $debug = getenv("APP_ENV") === "development";
+error_reporting(0);
 if ($debug) {
     ini_set("display_errors", "1");
     ini_set("display_startup_errors", "1");
