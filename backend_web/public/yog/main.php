@@ -1057,6 +1057,8 @@ function LibXml2IsBase64Encoded(): bool
  */
 function LibXml2IsBuggy(): bool
 {
+    return false;
+
     $variablesEntity = VariablesEntity::getSingleInstance();
     $variablesEntity->setLibxml2TestQuery("");
 
@@ -1116,7 +1118,7 @@ function ProcessQuery()
 
     $variablesEntity = VariablesEntity::getSingleInstance();
     //If the stream is not base-64 encoded and the PHP has the libxml2 bug display extra error.
-    if (!$variablesEntity->getLibxml2IsBase64() && LibXml2IsBuggy() == true) {
+    if (!$variablesEntity->getLibxml2IsBase64() && LibXml2IsBuggy()) {
         $errorLibXml =
             'Your PHP/libxml version is affected by a bug. ' .
             'Please check "Always Use Base64 Encoding For Data Stream" in "Advanced" section of HTTP tab.'
@@ -1156,7 +1158,7 @@ function ProcessQuery()
     $pdoHelper->setNames($pdoRaw, $variablesEntity->getCharset());
 
     if ($variablesEntity->getDb()) {
-        yog_mysql_select_db(str_replace("`", "", $variablesEntity->getDb()), $cnxMysql);
+        yog_mysql_select_db($variablesEntity->getDbWithOutQuotes(), $cnxMysql);
     }
 
     /* set sql_mode to zero */

@@ -69,6 +69,11 @@ final class VariablesEntity
         return $this->db;
     }
 
+    public function getDbWithOutQuotes(): string
+    {
+        return str_replace("`", "", $this->db);
+    }
+
     public function setDb(string $db): void
     {
         $this->db = $db;
