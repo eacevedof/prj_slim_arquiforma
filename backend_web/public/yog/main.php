@@ -81,7 +81,6 @@ function yog_mysql_field_flags($result, $offset)
 function yog_mysql_query($query, $db_link): array
 {
     $ret = [];
-
     $bool = mysqli_real_query($db_link, $query) or mysqli_error($db_link);
 
     if (mysqli_errno($db_link) != 0) {
@@ -133,77 +132,6 @@ function yog_mysql_query($query, $db_link): array
         }
     }
 
-    return $ret;
-}
-
-function yog_mysql_num_rows($result)
-{
-    //Get number of rows in result
-    $ret = 0;
-    switch (VariablesEntity::getSingleInstance()->getMysqlExtension()) {
-        case "mysql":
-            $ret = mysql_num_rows($result);
-            break;
-        case "mysqli":
-            $ret = mysqli_num_rows($result);
-            break;
-    }
-    return $ret;
-}
-function yog_mysql_num_fields($result)
-{
-    //Get number of fields in result
-    $ret = 0;
-    switch (VariablesEntity::getSingleInstance()->getMysqlExtension()) {
-        case "mysql":
-            $ret = mysql_num_fields($result);
-            break;
-        case "mysqli":
-            $ret = mysqli_num_fields($result);
-            break;
-    }
-    return $ret;
-}
-function yog_mysql_fetch_field($result)
-{
-    //Get column information from a result and return as an object
-    $ret = 0;
-    switch (VariablesEntity::getSingleInstance()->getMysqlExtension()) {
-        case "mysql":
-            $ret = mysql_fetch_field($result);
-            break;
-        case "mysqli":
-            $ret = mysqli_fetch_field($result);
-            break;
-    }
-    return $ret;
-}
-function yog_mysql_fetch_array($result)
-{
-    //Fetch a result row as an associative array, a numeric array, or both
-    $ret = 0;
-    switch (VariablesEntity::getSingleInstance()->getMysqlExtension()) {
-        case "mysql":
-            $ret = mysql_fetch_array($result);
-            break;
-        case "mysqli":
-            $ret = mysqli_fetch_array($result);
-            break;
-    }
-    return $ret;
-}
-function yog_mysql_fetch_lengths($result)
-{
-    //Get the length of each output in a result
-    $ret = array();
-    switch (VariablesEntity::getSingleInstance()->getMysqlExtension()) {
-        case "mysql":
-            $ret = mysql_fetch_lengths($result);
-            break;
-        case "mysqli":
-            $ret = mysqli_fetch_lengths($result);
-            break;
-    }
     return $ret;
 }
 
@@ -426,8 +354,8 @@ function CreateXMLFromResult($mysql, $value)
     $numfields = 0;
 
     if (!is_int($value['result'])) {
-        $numrows = yog_mysql_num_rows($value['result']);
-        $numfields = yog_mysql_num_fields($value['result']);
+        $numrows = mysqli_num_rows($value['result']);
+        $numfields = mysqli_num_fields($value['result']);
     }
 
     if ($isNotResultQuery  || (!$numrows && !$numfields)) {//
@@ -447,14 +375,14 @@ function CreateXMLFromResult($mysql, $value)
     HandleExtraInfo($mysql, $value);
 
     /* add the field count information */
-    $fieldcount = yog_mysql_num_fields($value['result']);
+    $fieldcount = mysqli_num_fields($value['result']);
     print($fieldcount);
     echo "<f_i c=\"$fieldcount\">";
 
     /* retrieve information about each fields */
     $i = 0;
     while ($i < $fieldcount) {
-        $meta = yog_mysql_fetch_field($value['result']);
+        $meta = mysqli_fetch_field($value['result']);
 
         echo "<f>";
         echo "<n>" . convertxmlchars($meta->name) . "</n>";
@@ -482,8 +410,8 @@ function CreateXMLFromResult($mysql, $value)
 
     echo "<r_i c=\"$numrows\">";
     /* add up each row information */
-    while ($row = yog_mysql_fetch_array($value['result'])) {
-        $lengths = yog_mysql_fetch_lengths($value['result']);
+    while ($row = mysqli_fetch_array($value['result'])) {
+        $lengths = mysqli_fetch_lengths($value['result']);
 
         /* start of a row */
         echo "<r>";
@@ -999,7 +927,7 @@ function ProcessQuery()
     $pdoHelper->setNames($variablesEntity->getCharset());
 
     if ($variablesEntity->getDb()) {
-        mysqli_select_db($cnxMysql, $variablesEntity->getDbWithOutQuotes())
+        mysqli_select_db($cnxMysql, $variablesEntity->getDbWithOutQuotes());
     }
 
     /* set sql_mode to zero */
