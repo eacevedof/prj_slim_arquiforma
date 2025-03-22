@@ -43,34 +43,16 @@ $variablesEntity->setXmlTagNameId( ConstantEnum::XML_NOSTATE);
 
 function yog_mysql_connect($host, $port, $username, $password, $db_name = "")
 {
-    $username = utf8_decode($username);
-    $ret = 0;
-    switch (VariablesEntity::getSingleInstance()->getMysqlExtension()) {
-        case "mysql":
-            if ($port != 0) {
-                //TCP-IP
-                $ret = mysql_connect($host.':'.$port, $username, $password);
-            } else {
-                //UDS. Here 'host' is the socket path
-                $ret = mysql_connect($host, $username, $password);
-            }
-
-            if (strlen($db_name) != 0) {
-                mysql_select_db("$db_name");
-            }
-            break;
-        case "mysqli":
-            $port = (int)$port;
-            if ($port != 0) {
-                //TCP-IP
-                $GLOBALS["___mysqli_ston"] = mysqli_connect($host, $username, $password, $db_name, $port);
-            } else {
-                //UDS. Here 'host' is the socket path
-                $GLOBALS["___mysqli_ston"] = mysqli_connect(null, $username, $password, $db_name, 0, $host);
-            }
-            $ret = $GLOBALS["___mysqli_ston"];
-            break;
+    $username = mb_convert_encoding($username, 'ISO-8859-1', 'UTF-8');
+    $port = (int)$port;
+    if ($port != 0) {
+        //TCP-IP
+        $GLOBALS["___mysqli_ston"] = mysqli_connect($host, $username, $password, $db_name, $port);
+    } else {
+        //UDS. Here 'host' is the socket path
+        $GLOBALS["___mysqli_ston"] = mysqli_connect(null, $username, $password, $db_name, 0, $host);
     }
+    $ret = $GLOBALS["___mysqli_ston"];
     return $ret;
 }
 
