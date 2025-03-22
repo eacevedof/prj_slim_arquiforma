@@ -1084,7 +1084,7 @@ function ProcessQuery()
             return;
         }
 
-        $htmlOutput->echoHtmlErrorAccess();
+        $htmlOutput->echoHtmlWithYogVersion();
         return;
     }
 
@@ -1099,7 +1099,7 @@ function ProcessQuery()
     yogLog($xmlDbAndQuery, "xmlDbAndQuery");
     if (!$xmlDbAndQuery) {
         yogLog("empty query showing yog version xml");
-        $htmlOutput->echoHtmlErrorAccess();
+        $htmlOutput->echoHtmlWithYogVersion();
         return;
     }
 
@@ -1116,7 +1116,7 @@ function ProcessQuery()
 
     $variablesEntity = VariablesEntity::getSingleInstance();
     //If the stream is not base-64 encoded and the PHP has the libxml2 bug display extra error.
-    if (LibXml2IsBase64Encoded() == false && LibXml2IsBuggy() == true) {
+    if (!$variablesEntity->getLibxml2IsBase64() && LibXml2IsBuggy() == true) {
         $errorLibXml =
             'Your PHP/libxml version is affected by a bug. ' .
             'Please check "Always Use Base64 Encoding For Data Stream" in "Advanced" section of HTTP tab.'

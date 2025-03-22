@@ -13,7 +13,7 @@ final class HtmlOutput
     }
 
 
-    public function echoHtmlErrorAccess(
+    public function echoHtmlWithYogVersion(
         string $extraMessage = ""
     ): void
     {
