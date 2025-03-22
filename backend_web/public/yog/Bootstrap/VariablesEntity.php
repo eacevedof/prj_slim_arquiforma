@@ -2,6 +2,8 @@
 
 namespace Yog\Bootstrap;
 
+use Yog\PDO\PdoMysql;
+
 final class VariablesEntity
 {
     private static ?self $instance = null;
@@ -18,9 +20,10 @@ final class VariablesEntity
     private string $query = "";
     private string $libxml2_test_query ="";
     private int $libxml2_is_base64 = 0;
-
     private string $dbExtension = "";
     private int $debug = 0;
+
+    private ?PdoMysql $pdoMysql = null;
 
     private function __construct() {}
 
@@ -177,5 +180,15 @@ final class VariablesEntity
     public function debugOn(int $debug = 1): void
     {
         $this->debug = $debug;
+    }
+
+    public function getPdoMysql(): PdoMysql
+    {
+        return $this->pdoMysql;
+    }
+
+    public function setPdoMysql(PdoMysql $pdoMysql): void
+    {
+        $this->pdoMysql = $pdoMysql;
     }
 }

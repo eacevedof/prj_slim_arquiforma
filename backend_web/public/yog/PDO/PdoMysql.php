@@ -20,20 +20,22 @@ final class PdoMysql
     private ?int $lastInsertId = null;
     private string $serverVersion = "";
     private bool $isResultQuery = false;
+    public ?PDO $pdo = null;
 
     public static function getInstance(): self
     {
         return new self();
     }
 
-    public function getPdoConnection(
+    public function loadPdoByDbInfo(
         string $host,
         string $port,
         string $username,
         string $password,
         string $dbName = ""
-    ): ?PDO
+    ): void
     {
+        $this->pdo = null;
         try {
             $dsn = "mysql:host=$host;port=$port;";
             if ($dbName) $dsn .= "dbname=$dbName;";
@@ -43,20 +45,17 @@ final class PdoMysql
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $pdo->exec("SET sql_mode=''");
             $this->serverVersion = $pdo->getAttribute(PDO::ATTR_SERVER_VERSION);
-            return $pdo;
+            $this->pdo = $pdo;
         }
         catch (PDOException $e) {
             $this->setErrorByException($e);
-            return null;
         }
     }
 
-    public function setNames(PDO $pdo, ?string $charset = ""): void
+    public function setNames(?string $charset = ""): void
     {
         if (!$charset) return;
-
-        $pdo->exec("SET NAMES '$charset'");
-        //yog_mysql_query($query, $mysql);
+        $this->pdo->exec("SET NAMES '$charset'");
     }
 
     public function getError(): string
@@ -69,13 +68,13 @@ final class PdoMysql
         return $this->errorCode;
     }
 
-    public function query(string $query, PDO $pdo): array
+    public function query(string $query): array
     {
         $this->resetQueryData();
 
         $this->lastQuery = $query;
         try {
-            $this->statement = $pdo->query($this->lastQuery);
+            $this->statement = $this->pdo->query($this->lastQuery);
             if (!$this->statement) {
                 $this->setError("-1", "Error in query: $this->lastQuery");
                 return [];
@@ -83,7 +82,7 @@ final class PdoMysql
 
             if (stripos($query, "INSERT") === 0) {
                 $this->isResultQuery = false;
-                $this->lastInsertId = (int) $pdo->lastInsertId();
+                $this->lastInsertId = (int) $this->pdo->lastInsertId();
                 return [
                     "lastInsertId" => $this->lastInsertId
                 ];
@@ -114,17 +113,17 @@ final class PdoMysql
         return $this->result;
     }
 
-    public function executeQuery(string $query, PDO $pdo): array
+    public function executeQuery(string $query): array
     {
         try {
-            $statement = $pdo->query($query);
+            $statement = $this->pdo->query($query);
             if (!$statement)
                 return ["result" => -1, "ar" => 0];
 
             return [
                 "result" => $statement,
                 "ar" => $statement->rowCount(),
-                "i_i" => $pdo->lastInsertId()
+                "i_i" => $this->pdo->lastInsertId()
             ];
 
         }

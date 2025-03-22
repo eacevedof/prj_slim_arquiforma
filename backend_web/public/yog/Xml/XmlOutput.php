@@ -58,7 +58,6 @@ final class XmlOutput
         return implode("", $output);
     }
 
-
     public function CreateXMLFromResult(PdoMysql $pdoMysql, string $tunnelVersion): string
     {
         $statement = $pdoMysql->getStatement();

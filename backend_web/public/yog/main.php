@@ -141,7 +141,6 @@ function yog_mysql_get_server_info($db_link)
 function yog_mysql_insert_id($db_link)
 {
     //Get the ID generated from the previous INSERT operation
-
     $ret = 0;
     switch (VariablesEntity::getSingleInstance()->getMysqlExtension()) {
         case "mysql":
@@ -157,75 +156,73 @@ function yog_mysql_insert_id($db_link)
 function yog_mysql_query($query, $db_link): array
 {
     $ret = [];
-    switch (VariablesEntity::getSingleInstance()->getMysqlExtension()) {
-        case "mysql":
-            $result = mysql_query($query, $db_link);
-            yogLog($result, "yog_mysql_query executed [$query]");
-            if (yog_mysql_errno($db_link) != 0) {
-                $temp_ar = array("result" => -1, "ar" => mysql_affected_rows($db_link));
-                array_push($ret, $temp_ar);
-            } elseif ($result === false) {
+    $variablesEntity = VariablesEntity::getSingleInstance();
 
-                $temp_ar = array("result" => 1, "ar" => mysql_affected_rows($db_link));
-                array_push($ret, $temp_ar);
-            } else {
-                $temp_ar = array("result" => $result, "ar" => mysql_affected_rows($db_link));
-                array_push($ret, $temp_ar);
-            }
-
-            /**********************/
-            break;
-        case "mysqli":
-            $ret = get_array_from_query($query, $db_link);
-            break;
-    }
-    return $ret;
-}
-function get_array_from_query($query, $db_link)
-{
-    $ret = array();
     $bool = mysqli_real_query($db_link, $query) or yog_mysql_error($db_link);
 
-    if (yog_mysql_errno($db_link) != 0) {
-
-        $temp_ar = array("result" => -1, "ar" => 0);
+    if (mysqli_errno($db_link) != 0) {
+        $temp_ar = array(
+            "result" => -1,
+            "ar" => 0
+        );
         array_push($ret, $temp_ar);
-
-    } elseif ($bool) {
+    }
+    elseif ($bool) {
         do {
             /* store first result set */
             $result = mysqli_store_result($db_link);
             $num_ar = mysqli_affected_rows($db_link);
 
             if ($result === false && yog_mysql_errno($db_link) != 0) {
-                $temp_ar = array("result" => -1, "ar" => $num_ar);
+                $temp_ar = array(
+                    "result" => -1,
+                    "ar" => $num_ar
+                );
                 array_push($ret, $temp_ar);
                 break;
-            } elseif ($result === false) {
-                $temp_ar = array("result" => 1, "ar" => $num_ar);
-                array_push($ret, $temp_ar);
-            } else {
-                $temp_ar = array("result" => $result, "ar" => $num_ar);
+            }
+            elseif ($result === false) {
+                $temp_ar = array(
+                    "result" => 1,
+                    "ar" => $num_ar
+                );
                 array_push($ret, $temp_ar);
             }
-        } while (mysqli_more_results($db_link) and mysqli_next_result($db_link));
+            else {
+                $temp_ar = array(
+                    "result" => $result,
+                    "ar" => $num_ar
+                );
+                array_push($ret, $temp_ar);
+            }
+        }
+        while (
+            mysqli_more_results($db_link) and mysqli_next_result($db_link)
+        );
 
         if (yog_mysql_errno($db_link) != 0) {
-            $temp_ar = array("result" => -1, "ar" => $num_ar);
+            $temp_ar = array(
+                "result" => -1,
+                "ar" => $num_ar
+            );
             array_push($ret, $temp_ar);
         }
     }
+
+    return $ret;
+}
+function get_array_from_query($query, $db_link)
+{
+    $ret = array();
+
     return $ret;
 }
 function yog_mysql_errno($db_link)
 {
     //Returns the numerical value of the error message from previous MySQL operation
-
     $ret = 0;
     switch (VariablesEntity::getSingleInstance()->getMysqlExtension()) {
-        case "mysql":
-            $ret = mysql_errno($db_link);
-            break;
+
         case "mysqli":
             $ret = mysqli_errno($db_link);
             break;
@@ -538,6 +535,7 @@ function HandleExtraInfo($mysql, $value)
 function ExecuteSingleQuery($mysql, string $query): void
 {
     yogLog("query-to-be-run: [$query]", "ExecuteSingleQuery");
+
     $result = yog_mysql_query($query, $mysql);
 
     $xmlOutput = XmlOutput::getInstance();
@@ -1138,10 +1136,11 @@ function ProcessQuery()
     );
 
     $pdoHelper = PdoMysql::getInstance();
-    $pdoRaw = $pdoHelper->getPdoConnection(
+    $pdoHelper->loadPdoByDbInfo(
         $variablesEntity->getHost(), $variablesEntity->getPort(),
         $variablesEntity->getUsername(), $variablesEntity->getPwd()
     );
+    $variablesEntity->setPdoMysql($pdoHelper);
 
     if (!$cnxMysql) {
         $xmlOutput->echoXmlError(
@@ -1155,7 +1154,7 @@ function ProcessQuery()
 
     /* Function will execute setnames in the server as it does in SQLyog client */
     SetName($cnxMysql);
-    $pdoHelper->setNames($pdoRaw, $variablesEntity->getCharset());
+    $pdoHelper->setNames($variablesEntity->getCharset());
 
     if ($variablesEntity->getDb()) {
         yog_mysql_select_db($variablesEntity->getDbWithOutQuotes(), $cnxMysql);
@@ -1166,7 +1165,8 @@ function ProcessQuery()
 
     if ($variablesEntity->isBatch()) {
         ExecuteBatchQuery($cnxMysql, $variablesEntity->getQuery());
-    } else {
+    }
+    else {
         ExecuteSingleQuery($cnxMysql, $variablesEntity->getQuery());
     }
 
