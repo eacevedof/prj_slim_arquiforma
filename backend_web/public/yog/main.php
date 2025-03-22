@@ -1181,13 +1181,6 @@ if (!get_cfg_var("register_globals")) {
     extract($httpRequest->getRequest());
 }
 
-/* we have to set the value to be off during runtime coz it does not work when magic_quotes_runtime = On is setin Php.ini */
-if (version_compare(PHP_VERSION, '5.3.0', '<')) {
-    if (get_magic_quotes_runtime()) {
-        set_magic_quotes_runtime(0);
-    }
-}
-
 /* we check if all the external libraries support i.e. expat and mysql in our case is built in or not */
 if ($phpExtensions->areExtensionsLoaded()) {
     ProcessQuery();
