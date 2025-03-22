@@ -123,35 +123,6 @@ function yog_mysql_field_flags($result, $offset)
     }
     return $ret;
 }
-function yog_mysql_get_server_info($db_link)
-{
-    //Get MySQL server info
-
-    $ret = 0;
-    switch (VariablesEntity::getSingleInstance()->getMysqlExtension()) {
-        case "mysql":
-            $ret = mysql_get_server_info($db_link);
-            break;
-        case "mysqli":
-            $ret = mysqli_get_server_info($db_link);
-            break;
-    }
-    return $ret;
-}
-function yog_mysql_insert_id($db_link)
-{
-    //Get the ID generated from the previous INSERT operation
-    $ret = 0;
-    switch (VariablesEntity::getSingleInstance()->getMysqlExtension()) {
-        case "mysql":
-            $ret = mysql_insert_id($db_link);
-            break;
-        case "mysqli":
-            $ret = mysqli_insert_id($db_link);
-            break;
-    }
-    return $ret;
-}
 
 function yog_mysql_query($query, $db_link): array
 {
@@ -211,12 +182,7 @@ function yog_mysql_query($query, $db_link): array
 
     return $ret;
 }
-function get_array_from_query($query, $db_link)
-{
-    $ret = array();
 
-    return $ret;
-}
 function yog_mysql_errno($db_link)
 {
     //Returns the numerical value of the error message from previous MySQL operation
@@ -522,10 +488,10 @@ function HandleExtraInfo($mysql, $value)
 
     yogFullLog("Enter HandleExtraInfo");
 
-    echo "<s_v>" . yog_mysql_get_server_info($mysql) . "</s_v>";
+    echo "<s_v>" . mysqli_get_server_info($mysql) . "</s_v>";
     echo "<m_i></m_i>";
     echo "<a_r>" . $value['ar'] . "</a_r>";
-    echo "<i_i>" . yog_mysql_insert_id($mysql) . "</i_i>";
+    echo "<i_i>" .  mysqli_insert_id($mysql) . "</i_i>";
 
     yogFullLog("Exit HandleExtraInfo");
 
@@ -1038,17 +1004,6 @@ function convertxmlchars($string, $called_by = "")
     return $result;
 }
 
-/**
- * checks if the XML stream is base 64 encoded
- *
- * @return bool If stream is encoded, return true. Else false;
- *
- */
-function LibXml2IsBase64Encoded(): bool
-{
-    $variablesEntity = VariablesEntity::getSingleInstance();
-    return (bool) $variablesEntity->getLibxml2IsBase64();
-}
 
 /** Detect if the user's PHP/LibXML is affected by the following bug: -
  *  http://bugs.php.net/bug.php?id=45996
@@ -1116,6 +1071,7 @@ function ProcessQuery()
 
     $variablesEntity = VariablesEntity::getSingleInstance();
     //If the stream is not base-64 encoded and the PHP has the libxml2 bug display extra error.
+    /*
     if (!$variablesEntity->getLibxml2IsBase64() && LibXml2IsBuggy()) {
         $errorLibXml =
             'Your PHP/libxml version is affected by a bug. ' .
@@ -1125,6 +1081,7 @@ function ProcessQuery()
         $xmlOutput->echoXmlClose();
         return;
     }
+    */
 
     if ($variablesEntity->getMysqlExtension() === "mysqli") {
         mysqli_report(MYSQLI_REPORT_OFF);
