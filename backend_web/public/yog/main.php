@@ -219,21 +219,6 @@ function yog_mysql_free_result($result): void
     }
 }
 
-function yog_mysql_select_db($db_name, $db_link)
-{
-    //Select a MySQL database
-    $ret = 0;
-    switch (VariablesEntity::getSingleInstance()->getMysqlExtension()) {
-        case "mysql":
-            $ret = mysql_select_db($db_name, $db_link);
-            break;
-        case "mysqli":
-            $ret = mysqli_select_db($db_link, $db_name);
-            break;
-    }
-    return $ret;
-}
-
 function GetCorrectDataTypeMySQLI($type)
 {
     switch($type) {
@@ -1026,7 +1011,7 @@ function ProcessQuery()
     $pdoHelper->setNames($variablesEntity->getCharset());
 
     if ($variablesEntity->getDb()) {
-        yog_mysql_select_db($variablesEntity->getDbWithOutQuotes(), $cnxMysql);
+        mysqli_select_db($cnxMysql, $variablesEntity->getDbWithOutQuotes())
     }
 
     /* set sql_mode to zero */
