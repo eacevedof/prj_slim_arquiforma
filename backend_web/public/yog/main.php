@@ -58,60 +58,31 @@ function yog_mysql_connect($host, $port, $username, $password, $db_name = "")
 
 function yog_mysql_field_type($result, $offset)
 {
-    //Get the type of the specified field in a result
-
-    $ret = 0;
-    switch (VariablesEntity::getSingleInstance()->getMysqlExtension()) {
-        case "mysql":
-            $ret = mysql_field_type($result, $offset);
-            break;
-        case "mysqli":
-            $tmp = mysqli_fetch_field_direct($result, $offset);
-            $ret = GetCorrectDataTypeMySQLI($tmp->type);
-            break;
-    }
+    $tmp = mysqli_fetch_field_direct($result, $offset);
+    $ret = GetCorrectDataTypeMySQLI($tmp->type);
     return $ret;
 }
+
 function yog_mysql_field_len($result, $offset)
 {
-    //Returns the length of the specified field
-
-    $ret = 0;
-    switch (VariablesEntity::getSingleInstance()->getMysqlExtension()) {
-        case "mysql":
-            $ret = mysql_field_len($result, $offset);
-            break;
-        case "mysqli":
-            $tmp = mysqli_fetch_field_direct($result, $offset);
-            $ret = $tmp->length;
-            break;
-    }
+    $tmp = mysqli_fetch_field_direct($result, $offset);
+    $ret = $tmp->length;
     return $ret;
 }
+
 function yog_mysql_field_flags($result, $offset)
 {
-    //Get the flags associated with the specified field in a result
-
-    $ret = 0;
-    switch (VariablesEntity::getSingleInstance()->getMysqlExtension()) {
-        case "mysql":
-            $ret = mysql_field_flags($result, $offset);
-            break;
-        case "mysqli":
-            $___mysqli_obj = (mysqli_fetch_field_direct($result, $offset));
-            $___mysqli_tmp = $___mysqli_obj->flags;
-            $ret = ($___mysqli_tmp ? (string)(substr((($___mysqli_tmp & MYSQLI_NOT_NULL_FLAG) ? "not_null " : "") . (($___mysqli_tmp & MYSQLI_PRI_KEY_FLAG) ? "primary_key " : "") . (($___mysqli_tmp & MYSQLI_UNIQUE_KEY_FLAG) ? "unique_key " : "") . (($___mysqli_tmp & MYSQLI_MULTIPLE_KEY_FLAG) ? "unique_key " : "") . (($___mysqli_tmp & MYSQLI_BLOB_FLAG) ? "blob " : "") . (($___mysqli_tmp & MYSQLI_UNSIGNED_FLAG) ? "unsigned " : "") . (($___mysqli_tmp & MYSQLI_ZEROFILL_FLAG) ? "zerofill " : "") . (($___mysqli_tmp & 128) ? "binary " : "") . (($___mysqli_tmp & 256) ? "enum " : "") . (($___mysqli_tmp & MYSQLI_AUTO_INCREMENT_FLAG) ? "auto_increment " : "") . (($___mysqli_tmp & MYSQLI_TIMESTAMP_FLAG) ? "timestamp " : "") . (($___mysqli_tmp & MYSQLI_SET_FLAG) ? "set " : ""), 0, -1)) : false);
-            break;
-    }
+    $___mysqli_obj = (mysqli_fetch_field_direct($result, $offset));
+    $___mysqli_tmp = $___mysqli_obj->flags;
+    $ret = ($___mysqli_tmp ? (string)(substr((($___mysqli_tmp & MYSQLI_NOT_NULL_FLAG) ? "not_null " : "") . (($___mysqli_tmp & MYSQLI_PRI_KEY_FLAG) ? "primary_key " : "") . (($___mysqli_tmp & MYSQLI_UNIQUE_KEY_FLAG) ? "unique_key " : "") . (($___mysqli_tmp & MYSQLI_MULTIPLE_KEY_FLAG) ? "unique_key " : "") . (($___mysqli_tmp & MYSQLI_BLOB_FLAG) ? "blob " : "") . (($___mysqli_tmp & MYSQLI_UNSIGNED_FLAG) ? "unsigned " : "") . (($___mysqli_tmp & MYSQLI_ZEROFILL_FLAG) ? "zerofill " : "") . (($___mysqli_tmp & 128) ? "binary " : "") . (($___mysqli_tmp & 256) ? "enum " : "") . (($___mysqli_tmp & MYSQLI_AUTO_INCREMENT_FLAG) ? "auto_increment " : "") . (($___mysqli_tmp & MYSQLI_TIMESTAMP_FLAG) ? "timestamp " : "") . (($___mysqli_tmp & MYSQLI_SET_FLAG) ? "set " : ""), 0, -1)) : false);
     return $ret;
 }
 
 function yog_mysql_query($query, $db_link): array
 {
     $ret = [];
-    $variablesEntity = VariablesEntity::getSingleInstance();
 
-    $bool = mysqli_real_query($db_link, $query) or yog_mysql_error($db_link);
+    $bool = mysqli_real_query($db_link, $query) or mysqli_error($db_link);
 
     if (mysqli_errno($db_link) != 0) {
         $temp_ar = array(
@@ -126,7 +97,7 @@ function yog_mysql_query($query, $db_link): array
             $result = mysqli_store_result($db_link);
             $num_ar = mysqli_affected_rows($db_link);
 
-            if ($result === false && yog_mysql_errno($db_link) != 0) {
+            if ($result === false && mysqli_errno($db_link) != 0) {
                 $temp_ar = array(
                     "result" => -1,
                     "ar" => $num_ar
@@ -153,7 +124,7 @@ function yog_mysql_query($query, $db_link): array
             mysqli_more_results($db_link) and mysqli_next_result($db_link)
         );
 
-        if (yog_mysql_errno($db_link) != 0) {
+        if (mysqli_errno($db_link) != 0) {
             $temp_ar = array(
                 "result" => -1,
                 "ar" => $num_ar
@@ -165,33 +136,6 @@ function yog_mysql_query($query, $db_link): array
     return $ret;
 }
 
-function yog_mysql_errno($db_link)
-{
-    //Returns the numerical value of the error message from previous MySQL operation
-    $ret = 0;
-    switch (VariablesEntity::getSingleInstance()->getMysqlExtension()) {
-
-        case "mysqli":
-            $ret = mysqli_errno($db_link);
-            break;
-    }
-    return $ret;
-}
-function yog_mysql_error($db_link)
-{
-    //Returns the text of the error message from previous MySQL operation
-
-    $ret = 0;
-    switch (VariablesEntity::getSingleInstance()->getMysqlExtension()) {
-        case "mysql":
-            $ret = mysql_error($db_link);
-            break;
-        case "mysqli":
-            $ret = mysqli_error($db_link);
-            break;
-    }
-    return $ret;
-}
 function yog_mysql_num_rows($result)
 {
     //Get number of rows in result
@@ -285,20 +229,6 @@ function yog_mysql_select_db($db_name, $db_link)
             break;
         case "mysqli":
             $ret = mysqli_select_db($db_link, $db_name);
-            break;
-    }
-    return $ret;
-}
-function yog_mysql_close($db_link)
-{
-    //Close MySQL connection
-    $ret = 0;
-    switch (VariablesEntity::getSingleInstance()->getMysqlExtension()) {
-        case "mysql":
-            $ret = mysql_close($db_link);
-            break;
-        case "mysqli":
-            $ret = mysqli_close($db_link);
             break;
     }
     return $ret;
@@ -490,8 +420,8 @@ function ExecuteSingleQuery($mysql, string $query): void
     foreach ($result as  $value) {
         if ($value['result'] === -1) {
             $xmlOutput->echoXmlError(
-                (string) yog_mysql_errno($mysql),
-                (string) yog_mysql_error($mysql)
+                (string) mysqli_errno($mysql),
+                (string) mysqli_error($mysql)
             );
             return;
         }
@@ -802,8 +732,8 @@ function ExecuteBatchQuery($mysql, $query)
             if ($value['result'] === -1) {
 
                 $xmlOutput->echoXmlError(
-                    (string) yog_mysql_errno($mysql),
-                    (string) yog_mysql_error($mysql)
+                    (string) mysqli_errno($mysql),
+                    (string) mysqli_error($mysql)
                 );
                 return;
             }
@@ -1109,7 +1039,7 @@ function ProcessQuery()
         ExecuteSingleQuery($cnxMysql, $variablesEntity->getQuery());
     }
 
-    yog_mysql_close($cnxMysql);
+    mysqli_close($cnxMysql);
     $xmlOutput->echoXmlClose();
 }
 
