@@ -207,18 +207,6 @@ function yog_mysql_fetch_lengths($result)
     return $ret;
 }
 
-function yog_mysql_free_result($result): void
-{
-    switch (VariablesEntity::getSingleInstance()->getMysqlExtension()) {
-        case "mysql":
-            $ret = mysql_free_result($result);
-            break;
-        case "mysqli":
-            $ret = mysqli_free_result($result);
-            break;
-    }
-}
-
 function GetCorrectDataTypeMySQLI($type)
 {
     switch($type) {
@@ -414,7 +402,7 @@ function ExecuteSingleQuery($mysql, string $query): void
         CreateXMLFromResult($mysql, $value);
 
         if ($value['result'] !== 1) {
-            yog_mysql_free_result($value['result']);
+            mysqli_free_result($value['result']);
         }
     }
 }
@@ -725,7 +713,7 @@ function ExecuteBatchQuery($mysql, $query)
 
             /* free the result */
             if (!is_int($value['result'])) {
-                yog_mysql_free_result($value['result']);
+                mysqli_free_result($value['result']);
             }
 
         }
