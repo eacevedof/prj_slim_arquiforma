@@ -28,23 +28,21 @@ final class XmlOutput
         echo $this->getXmlError($errorCode, $error);
     }
 
-    private function getXmlError(string $errorCode, string $error): string
+    public function getEscapedCharsForXml(string $string): string
     {
-        $escapedError = convertxmlchars($error);
-        $tunnelVersion = ConstantEnum::TUNNEL_VERSION_13_21;
-        return "<result v=\"$tunnelVersion\"><e_i><e_n>$errorCode</e_n><e_d>$escapedError</e_d></e_i></result>";
+        $result = str_replace("&", "&amp;", $string);
+        $result = str_replace("<", "&lt;", $result);
+        $result = str_replace(">", "&gt;", $result);
+        $result = str_replace("'", "&apos;", $result);
+        $result = str_replace("\"", "&quot;", $result);
+        return $result;
     }
 
-    public function getHandleExtraInfo(PdoMysql $pdoMysql): string
+    private function getXmlError(string $errorCode, string $error): string
     {
-        $lastInsertId = $pdoMysql->getLastInsertId() ?? "";
-        $output = [
-            "<s_v>{$pdoMysql->getServerVersion()}</s_v>",
-            "<m_i></m_i>",
-            "<a_r>{$pdoMysql->getRowCount()}</a_r>",
-            "<i_i>$lastInsertId</i_i>"
-        ];
-        return implode("", $output);
+        $escapedError = $this->getEscapedCharsForXml($error);
+        $tunnelVersion = ConstantEnum::TUNNEL_VERSION_13_21;
+        return "<result v=\"$tunnelVersion\"><e_i><e_n>$errorCode</e_n><e_d>$escapedError</e_d></e_i></result>";
     }
 
     public function getXmlNoResult(PdoMysql $pdoMysql): string
@@ -56,6 +54,23 @@ final class XmlOutput
             $this->getHandleExtraInfo($pdoMysql),
             "<<f_i c=\"0\"></f_i><r_i></r_i></result>"
         ];
+        return $this->getAsString($output);
+    }
+
+    public function getHandleExtraInfo(PdoMysql $pdoMysql): string
+    {
+        $lastInsertId = $pdoMysql->getLastInsertId() ?? "";
+        $output = [
+            "<s_v>{$pdoMysql->getServerVersion()}</s_v>",
+            "<m_i></m_i>",
+            "<a_r>{$pdoMysql->getRowCount()}</a_r>",
+            "<i_i>$lastInsertId</i_i>"
+        ];
+        return $this->getAsString($output);
+    }
+
+    private function getAsString(array $output): string
+    {
         return implode("", $output);
     }
 
@@ -109,7 +124,7 @@ final class XmlOutput
             $this->getHandleExtraInfo($pdoMysql),
             $numFields,
         ];
-        return implode("", $output);
+        return $this->getAsString($output);
     }
 
     private function getXmlField(object $field): string
@@ -127,6 +142,6 @@ final class XmlOutput
             "<ty>{$type}</ty>",
             "</f>",
         ];
-        return implode("", $output);
+        return $this->getAsString($output);
     }
 }

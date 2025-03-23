@@ -157,6 +157,7 @@ function ExecuteSingleQuery($mysql, string $query): void
 
 function CreateXMLFromResult($mysql, $qResult)
 {
+    $xmlOutput = XmlOutput::getInstance();
     // $value['result'], $value['ar']
     /* query execute was successful so we need to echo the correct xml */
     /* the query may or may not return any result */
@@ -199,9 +200,9 @@ function CreateXMLFromResult($mysql, $qResult)
         $meta = mysqli_fetch_field($qResult['result']);
 
         echo "<f>";
-        echo "<n>" . convertxmlchars($meta->name) . "</n>";
-        echo "<t>" . convertxmlchars($meta->table) . "</t>";
-        echo "<m>" . convertxmlchars($meta->max_length) . "</m>";
+        echo "<n>" . $xmlOutput->getEscapedCharsForXml($meta->name) . "</n>";
+        echo "<t>" . $xmlOutput->getEscapedCharsForXml($meta->table) . "</t>";
+        echo "<m>" . $xmlOutput->getEscapedCharsForXml($meta->max_length) . "</m>";
         echo "<d></d>";
         echo "<ty>" . yog_mysql_field_type($qResult['result'], $i) . "</ty>";
         echo "</f>";
@@ -231,7 +232,9 @@ function CreateXMLFromResult($mysql, $qResult)
                 if ($lengths[$i] == 0) {
                     echo "_";
                 } else {
-                    echo convertxmlchars(base64_encode($row[$i]));
+                    echo $xmlOutput->getEscapedCharsForXml(
+                        base64_encode($row[$i])
+                    );
                 }
             }
 
@@ -598,26 +601,6 @@ function xmlHandlerCharData($parser, $tagInnerText): void
             $variablesEntity->getLibxml2TestQuery().$tagInnerText
         );
     }
-}
-
-/* Convert special characters such as <,>,&, /,\, to equivalent xmlor html characters*/
-function convertxmlchars($string, $called_by = "")
-{
-    yogFullLog("Enter convertxmlchars, called by".$called_by);
-    yogFullLog("Input: " . $string);
-
-    $result = $string;
-
-    $result = str_replace("&", "&amp;", $result);
-    $result = str_replace("<", "&lt;", $result);
-    $result = str_replace(">", "&gt;", $result);
-    $result = str_replace("'", "&apos;", $result);
-    $result = str_replace("\"", "&quot;", $result);
-
-    yogFullLog("Output: " . $result);
-    yogFullLog("Exit convertxmlchars");
-
-    return $result;
 }
 
 /* Process the  query*/
