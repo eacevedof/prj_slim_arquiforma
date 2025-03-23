@@ -5,6 +5,7 @@ require_once __DIR__ . "/autoload.php";
 use Yog\Bootstrap\ConstantEnum;
 use Yog\Bootstrap\VariablesEntity;
 
+use Yog\Enums\XmlTagEnum;
 use Yog\Http\HttpRequest;
 use Yog\Checkers\PhpExtensions;
 use Yog\Checkers\Php;
@@ -35,7 +36,8 @@ if ($httpRequest->isGarbageTestFromApp()) {
 }
 
 $xmlInput = XmlInput::getInstance($requestInput ?? "");
-yogLog($xmlInput, "xmlInput");
+yogLog($xmlInput->getInnerText(XmlTagEnum::HOST), "xmlInput");
+die;
 
 $phpExtensions = PhpExtensions::getInstance();
 $php = Php::getInstance();
