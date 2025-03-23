@@ -124,16 +124,10 @@ function yog_mysql_query($query, $db_link): array
 /* Output extra info used by SQLyog internally */
 function HandleExtraInfo($mysql, $value)
 {
-
-    yogFullLog("Enter HandleExtraInfo");
-
     echo "<s_v>" . mysqli_get_server_info($mysql) . "</s_v>";
     echo "<m_i></m_i>";
     echo "<a_r>" . $value['ar'] . "</a_r>";
     echo "<i_i>" .  mysqli_insert_id($mysql) . "</i_i>";
-
-    yogFullLog("Exit HandleExtraInfo");
-
 }
 
 /* Process when only a single query is called. */
@@ -440,13 +434,11 @@ function ExecuteBatchQuery($mysql, $query)
 
         $result = yog_mysql_query($prev, $mysql);
 
-        foreach ($result as $key => $value) {
-            //$value['result'], $value['ar']
+        foreach ($result as  $value) {
             if ($value['result'] === -1) {
-
                 $xmlOutput->echoXmlError(
                     (string) mysqli_errno($mysql),
-                    (string) mysqli_error($mysql)
+                    mysqli_error($mysql)
                 );
                 return;
             }
@@ -455,7 +447,6 @@ function ExecuteBatchQuery($mysql, $query)
             if (!is_int($value['result'])) {
                 mysqli_free_result($value['result']);
             }
-
         }
     }
 }
