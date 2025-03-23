@@ -36,9 +36,7 @@ if ($httpRequest->isGarbageTestFromApp()) {
 }
 
 $xmlInput = XmlInput::getInstance($requestInput ?? "");
-
 $phpExtensions = PhpExtensions::getInstance();
-$php = Php::getInstance();
 $chkMysql = Mysql::getInstance();
 
 set_time_limit(0);
