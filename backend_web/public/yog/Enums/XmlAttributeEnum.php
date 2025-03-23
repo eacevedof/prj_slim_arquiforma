@@ -9,5 +9,5 @@ enum XmlAttributeEnum: string
 
     case VERSION = "v";
     case COUNT = "c";
-    case VALUE_LENGTH = "l";
+    case LENGTH = "l";
 }

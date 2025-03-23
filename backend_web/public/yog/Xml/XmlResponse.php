@@ -14,7 +14,25 @@ final class XmlResponse
         return new self();
     }
 
-    public function getTagValue(XmlTagEnum $tag, string $value): string
+    public function getOpenTagWithAttribute(
+        XmlTagEnum $tag,
+        XmlAttributeEnum $attribute, string $attributeValue
+    ): string
+    {
+        return $this->getOnlyOpenTagWithAttribute($tag->value, $attribute->value, $attributeValue);
+    }
+
+    public function getOpenTag(XmlTagEnum $tag): string
+    {
+        return "<$tag->value>";
+    }
+
+    public function getCloseTag(XmlTagEnum $tag): string
+    {
+        return "</$tag->value>";
+    }
+
+    public function getTagValue(XmlTagEnum $tag, string $value = ""): string
     {
         return $this->getTaggedValue($tag->value, $value);
     }
@@ -44,6 +62,12 @@ final class XmlResponse
         $attrValue = htmlentities($attrValue, ENT_QUOTES, "UTF-8");
 
         return "<$tag $attribute=\"$attrValue\">$innerText</$tag>";
+    }
+
+    private function getOnlyOpenTagWithAttribute(string $tag, string $attribute, string $attrValue): string
+    {
+        $attrValue = htmlentities($attrValue, ENT_QUOTES, "UTF-8");
+        return "<$tag $attribute=\"$attrValue\">";
     }
 
     public function addOutput(string $tagged): self

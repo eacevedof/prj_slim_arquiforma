@@ -17,13 +17,17 @@ enum XmlTagEnum: string
     case QUERY_INFO = "query_info";
 
 
+    case XML = "xml";
+    case RESULT = "result";
     case COLUMN = "c";
     case FIELD_INFORMATION = "f_i";
     case SERVER_INFO = "s_v";
     case M_I = "m_i";
     case E_I = "e_i";
     case NUM_ROW_RESULT = "a_r";
+    case INSERTED_ID = "i_i";
 
+    case FIELD = "f";
     case FIELD_NAME = "n";
     case FIELD_TABLE = "t";
     case FIELD_MAX_LENGTH = "m";

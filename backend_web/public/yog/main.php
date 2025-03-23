@@ -5,6 +5,7 @@ require_once __DIR__ . "/autoload.php";
 use Yog\Bootstrap\ConstantEnum;
 use Yog\Bootstrap\VariablesEntity;
 
+use Yog\Enums\XmlAttributeEnum;
 use Yog\Enums\XmlTagEnum;
 use Yog\Http\HttpRequest;
 use Yog\Checkers\PhpExtensions;
@@ -60,7 +61,36 @@ $variablesEntity->setPwd($xmlInput->getInnerText(XmlTagEnum::PASSWORD));
 $variablesEntity->setPort($xmlInput->getInnerText(XmlTagEnum::PORT));
 //$variablesEntity->setQuery($xmlInput->getInnerText(XmlTagEnum::QUERY));
 
-$xmlResponse->getTagValue();
+$output = [];
+$output[] = $xmlResponse->getOpenTag(XmlTagEnum::XML);
+$output[] = $xmlResponse->getOpenTagWithAttribute(XmlTagEnum::RESULT,  XmlAttributeEnum::VERSION, ConstantEnum::TUNNEL_VERSION_13_21);
+$output[] = $xmlResponse->getTagValue(XmlTagEnum::E_I);
+$output[] = $xmlResponse->getTagValue(XmlTagEnum::SERVER_INFO,  "10.5.22-MariaDB-1:10.5.22+maria~deb11-log");
+$output[] = $xmlResponse->getTagValue(XmlTagEnum::M_I);
+$output[] = $xmlResponse->getTagValue(XmlTagEnum::NUM_ROW_RESULT,  "1");
+$output[] = $xmlResponse->getTagValue(XmlTagEnum::INSERTED_ID,  "0");
+$output[] = 1;
+$output[] = $xmlResponse->getOpenTagWithAttribute(XmlTagEnum::FIELD_INFORMATION, XmlAttributeEnum::COUNT, "1");
+$output[] = $xmlResponse->getOpenTag(XmlTagEnum::FIELD);
+$output[] = $xmlResponse->getTagValue(XmlTagEnum::FIELD_NAME,  "version()");
+$output[] = $xmlResponse->getTagValue(XmlTagEnum::FIELD_TABLE);
+$output[] = $xmlResponse->getTagValue(XmlTagEnum::FIELD_MAX_LENGTH,  "0");
+$output[] = $xmlResponse->getTagValue(XmlTagEnum::FIELD_D);
+$output[] = $xmlResponse->getTagValue(XmlTagEnum::FIELD_TYPE,  "varchar");
+$output[] = $xmlResponse->getCloseTag(XmlTagEnum::FIELD);
+$output[] = $xmlResponse->getCloseTag(XmlTagEnum::FIELD_INFORMATION);
+$output[] = $xmlResponse->getOpenTagWithAttribute(XmlTagEnum::ROW_INFO, XmlAttributeEnum::COUNT, "1");
+$output[] = $xmlResponse->getOpenTag(XmlTagEnum::ROW);
+$output[] = $xmlResponse->getTagWithAttribute(XmlTagEnum::COLUMN, "10.5.22-MariaDB-1:10.5.22+maria~deb11-log", XmlAttributeEnum::LENGTH, "41");
+$output[] = $xmlResponse->getCloseTag(XmlTagEnum::ROW);
+$output[] = $xmlResponse->getCloseTag(XmlTagEnum::ROW_INFO);
+$output[] = $xmlResponse->getCloseTag(XmlTagEnum::RESULT);
+$output[] = $xmlResponse->getCloseTag(XmlTagEnum::XML);
+$output = implode("", $output);
+//yogLog($output, "eaf-output");
+//die($output);
+
+
 
 /* check whether global variables are registered or not */
 if (!get_cfg_var("register_globals")) {
