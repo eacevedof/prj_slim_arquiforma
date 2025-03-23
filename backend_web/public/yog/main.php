@@ -142,11 +142,11 @@ function ExecuteSingleQuery($mysql, string $query): void
         if ($value['result'] === -1) {
             $xmlOutput->echoXmlError(
                 (string) mysqli_errno($mysql),
-                (string) mysqli_error($mysql)
+                mysqli_error($mysql)
             );
             return;
         }
-        /* free the result */
+
         CreateXMLFromResult($mysql, $value);
 
         if ($value['result'] !== 1) {
@@ -155,15 +155,10 @@ function ExecuteSingleQuery($mysql, string $query): void
     }
 }
 
-function CreateXMLFromResult($mysql, $qResult)
+function CreateXMLFromResult($mysql, $qResult): void
 {
     $xmlOutput = XmlOutput::getInstance();
-    // $value['result'], $value['ar']
-    /* query execute was successful so we need to echo the correct xml */
-    /* the query may or may not return any result */
-    yogFullLog("yog_mysql_num_rows in ExecuteSingleQuery");
 
-    // check if the query is not a result returning query
     $isNotResultQuery = ($qResult['result'] === 1) ? 1 : 0;
     $numrows = 0;
     $numfields = 0;
@@ -173,7 +168,7 @@ function CreateXMLFromResult($mysql, $qResult)
         $numfields = mysqli_num_fields($qResult['result']);
     }
 
-    if ($isNotResultQuery  || (!$numrows && !$numfields)) {//
+    if ($isNotResultQuery  || (!$numrows && !$numfields)) {
         /* is a non-result query */
         echo "<result v=\"" . ConstantEnum::TUNNEL_VERSION_13_21 . "\">";
         echo "<e_i></e_i>";
@@ -454,7 +449,6 @@ function ExecuteBatchQuery($mysql, $query)
     }
 }
 
-/* Function sets the MySQL server to non-strict mode as SQLyog is designed to work in non-strict mode */
 function SetNonStrictMode($mysql)
 {
 
@@ -469,8 +463,6 @@ function SetNonStrictMode($mysql)
     return;
 }
 
-/* Starting from SQLyog v5.1, we dont take the charset info from the server, instead SQLyog send the info
-   in the posted XML */
 function SetName($cnxMysql)
 {
     $variablesEntity = VariablesEntity::getSingleInstance();
@@ -484,12 +476,9 @@ function SetName($cnxMysql)
     }
 }
 
-/* Start element handler for the parser */
 function xmlHandlerStartElement($parser, $xmlTagName, $attrs)
 {
     yogLog($xmlTagName, "xmlHandlerStartElement");
-    //Done for bug in PHP 5.2.6 and libXML 2.7,2.
-    // Special HTML characters were being dropped. So, now we provide to send always as base 64 encoded data.
     $variablesEntity = VariablesEntity::getSingleInstance();
     $variablesEntity->setIsBase64(0);
     if (isset($attrs["E"])) {
@@ -532,18 +521,12 @@ function xmlHandlerStartElement($parser, $xmlTagName, $attrs)
     }
 }
 
-/* End element handler for the XML parser */
 function xmlHandlerEndElement($parser, $name)
 {
-    yogFullLog("Enter endElement");
-
     $variablesEntity = VariablesEntity::getSingleInstance();
     $variablesEntity->setXmlTagNameId(ConstantEnum::XML_NOSTATE);
-
-    yogFullLog("Exit  endElement");
 }
 
-/* Character data handler for the parser */
 function xmlHandlerCharData($parser, $tagInnerText): void
 {
     yogLog($tagInnerText, "xmlHandlerCharData tagInnerText");
@@ -603,7 +586,6 @@ function xmlHandlerCharData($parser, $tagInnerText): void
     }
 }
 
-/* Process the  query*/
 function ProcessQuery()
 {
     $php = Php::getInstance();
@@ -659,10 +641,7 @@ function ProcessQuery()
         return;
     }
     */
-
-    if ($variablesEntity->getMysqlExtension() === "mysqli") {
-        mysqli_report(MYSQLI_REPORT_OFF);
-    }
+    mysqli_report(MYSQLI_REPORT_OFF);
 
     $cnxMysql = yog_mysql_connect(
         $variablesEntity->getHost(), $variablesEntity->getPort(),
@@ -708,10 +687,9 @@ function ProcessQuery()
     $xmlOutput->echoXmlClose();
 }
 
-/* we check if all the external libraries support i.e. expat and mysql in our case is built in or not */
-if ($phpExtensions->areExtensionsLoaded()) {
+if ($phpExtensions->areExtensionsLoaded())
     ProcessQuery();
-}
+
 
 
 
