@@ -3,6 +3,7 @@
 namespace Yog\Xml;
 
 use Yog\Bootstrap\ConstantEnum;
+use Yog\Enums\XmlAttributeEnum;
 use Yog\Enums\XmlTagEnum;
 
 final class XmlResponse
@@ -18,10 +19,29 @@ final class XmlResponse
         return $this->getTaggedValue($tag->value, $value);
     }
 
-    private function getTaggedValue(string $tag, string $value): string
+    public function getTagWithAttribute(
+        XmlTagEnum $tag, string $value,
+        XmlAttributeEnum $attribute, string $attributeValue
+    ): string
     {
-        $value = htmlentities($value, ENT_QUOTES, "UTF-8");
-        return "<$tag>$value</$tag>";
+        return $this->getTaggedWithAttribute(
+            $tag->value, $value,
+            $attribute->value, $attributeValue
+        );
+    }
+
+    private function getTaggedValue(string $tag, string $innerText): string
+    {
+        $innerText = htmlentities($innerText, ENT_QUOTES, "UTF-8");
+        return "<$tag>$innerText</$tag>";
+    }
+
+    private function getTaggedWithAttribute(string $tag, string $innerText, string $attribute, string $attrValue): string
+    {
+        $innerText = htmlentities($innerText, ENT_QUOTES, "UTF-8");
+        $attrValue = htmlentities($attrValue, ENT_QUOTES, "UTF-8");
+
+        return "<$tag $attribute=\"$attrValue\">$innerText</$tag>";
     }
 
     private function addOutput(string $tagged): self
