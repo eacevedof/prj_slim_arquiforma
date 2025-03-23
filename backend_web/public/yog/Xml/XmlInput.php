@@ -40,9 +40,7 @@ final class XmlInput
 
         $xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>".$xmlString;
 
-        return trim(
-            $xmlString
-        );
+        return trim($xmlString);
     }
 
     public static function getInstance(string $xmlString): self
@@ -52,12 +50,11 @@ final class XmlInput
 
     public function getInnerText(XmlTagEnum $xmlTagEnum): string
     {
-        yogLog($this->domDocument->saveXML(), "elements->length");
         $elements = $this->domDocument->getElementsByTagName($xmlTagEnum->value);
-        yogLog($elements, "elements");
-        if ($elements->length) return "";
+        if (!$elements->length) return "";
 
-        return $elements->item(0)->nodeValue ?? "";
+        $element = $elements->item(0);
+        return $element->nodeValue ?? "";
     }
 
     public function getAttributeValue(
@@ -66,7 +63,7 @@ final class XmlInput
     ): string
     {
         $elements = $this->domDocument->getElementsByTagName($connectTag->value);
-        if ($elements->length) return "";
+        if (!$elements->length) return "";
 
         $element = $elements->item(0);
         if ($element->hasAttribute($attributeName->value)) {
@@ -74,5 +71,4 @@ final class XmlInput
         }
         return "";
     }
-
 }
