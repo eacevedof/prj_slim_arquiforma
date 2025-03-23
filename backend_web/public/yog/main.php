@@ -36,8 +36,6 @@ if ($httpRequest->isGarbageTestFromApp()) {
 }
 
 $xmlInput = XmlInput::getInstance($requestInput ?? "");
-yogLog($xmlInput->getInnerText(XmlTagEnum::HOST), "xmlInput");
-die;
 
 $phpExtensions = PhpExtensions::getInstance();
 $php = Php::getInstance();
