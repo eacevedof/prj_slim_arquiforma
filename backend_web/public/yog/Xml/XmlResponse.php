@@ -32,19 +32,21 @@ final class XmlResponse
 
     private function getTaggedValue(string $tag, string $innerText): string
     {
-        $innerText = htmlentities($innerText, ENT_QUOTES, "UTF-8");
+        //$innerText = htmlentities($innerText, ENT_QUOTES, "UTF-8");
+        $innerText = base64_encode($innerText);
         return "<$tag>$innerText</$tag>";
     }
 
     private function getTaggedWithAttribute(string $tag, string $innerText, string $attribute, string $attrValue): string
     {
-        $innerText = htmlentities($innerText, ENT_QUOTES, "UTF-8");
+        //$innerText = htmlentities($innerText, ENT_QUOTES, "UTF-8");
+        $innerText = base64_encode($innerText);
         $attrValue = htmlentities($attrValue, ENT_QUOTES, "UTF-8");
 
         return "<$tag $attribute=\"$attrValue\">$innerText</$tag>";
     }
 
-    private function addOutput(string $tagged): self
+    public function addOutput(string $tagged): self
     {
         $this->output[] = $tagged;
         return $this;

@@ -40,6 +40,8 @@ $xmlInput = XmlInput::getInstance($requestInput ?? "");
 $phpExtensions = PhpExtensions::getInstance();
 $chkMysql = Mysql::getInstance();
 
+$xmlResponse = XmlResponse::getInstance();
+
 set_time_limit(0);
 error_reporting(0);
 ini_set("display_errors", 0); //siempre tiene q estar en 0 sino rompe el xml por los warnings
@@ -58,6 +60,7 @@ $variablesEntity->setPwd($xmlInput->getInnerText(XmlTagEnum::PASSWORD));
 $variablesEntity->setPort($xmlInput->getInnerText(XmlTagEnum::PORT));
 //$variablesEntity->setQuery($xmlInput->getInnerText(XmlTagEnum::QUERY));
 
+$xmlResponse->getTagValue();
 
 /* check whether global variables are registered or not */
 if (!get_cfg_var("register_globals")) {
