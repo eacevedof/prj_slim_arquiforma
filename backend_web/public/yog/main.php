@@ -64,21 +64,6 @@ function yog_mysql_field_type($result, $fieldPosition): string
     return $literalType;
 }
 
-function yog_mysql_field_len($result, $offset)
-{
-    $tmp = mysqli_fetch_field_direct($result, $offset);
-    $ret = $tmp->length;
-    return $ret;
-}
-
-function yog_mysql_field_flags($result, $offset)
-{
-    $___mysqli_obj = (mysqli_fetch_field_direct($result, $offset));
-    $___mysqli_tmp = $___mysqli_obj->flags;
-    $ret = ($___mysqli_tmp ? (string)(substr((($___mysqli_tmp & MYSQLI_NOT_NULL_FLAG) ? "not_null " : "") . (($___mysqli_tmp & MYSQLI_PRI_KEY_FLAG) ? "primary_key " : "") . (($___mysqli_tmp & MYSQLI_UNIQUE_KEY_FLAG) ? "unique_key " : "") . (($___mysqli_tmp & MYSQLI_MULTIPLE_KEY_FLAG) ? "unique_key " : "") . (($___mysqli_tmp & MYSQLI_BLOB_FLAG) ? "blob " : "") . (($___mysqli_tmp & MYSQLI_UNSIGNED_FLAG) ? "unsigned " : "") . (($___mysqli_tmp & MYSQLI_ZEROFILL_FLAG) ? "zerofill " : "") . (($___mysqli_tmp & 128) ? "binary " : "") . (($___mysqli_tmp & 256) ? "enum " : "") . (($___mysqli_tmp & MYSQLI_AUTO_INCREMENT_FLAG) ? "auto_increment " : "") . (($___mysqli_tmp & MYSQLI_TIMESTAMP_FLAG) ? "timestamp " : "") . (($___mysqli_tmp & MYSQLI_SET_FLAG) ? "set " : ""), 0, -1)) : false);
-    return $ret;
-}
-
 function yog_mysql_query($query, $db_link): array
 {
     $ret = [];
