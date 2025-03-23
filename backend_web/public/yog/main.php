@@ -136,75 +136,6 @@ function yog_mysql_query($query, $db_link): array
     return $ret;
 }
 
-/* function finds and returns the correct type understood by MySQL C API() */
-function GetCorrectDataType($result, $j)
-{
-    $data   = null;
-
-    switch(yog_mysql_field_type($result, $j)) {
-        case "int":
-            if (yog_mysql_field_len($result, $j) <= 4) {
-                $data = "smallint";
-            } elseif (yog_mysql_field_len($result, $j) <= 9) {
-                $data = "mediumint";
-            } else {
-                $data = "int";
-            }
-            break;
-
-        case "real":
-            if (yog_mysql_field_len($result, $j) <= 10) {
-                $data = "float";
-            } else {
-                $data = "double";
-            }
-            break;
-
-        case "string":
-            $data = "varchar";
-            break;
-
-        case "blob":
-            $textblob = "TEXT";
-            if (strpos(yog_mysql_field_flags($result, $j), "binary")) {
-                $textblob = "BLOB";
-            }
-            if (yog_mysql_field_len($result, $j) <= 255) {
-                if ($textblob == "TEXT") {
-                    $data = "tinytext";
-                } else {
-                    $data = "tinyblob";
-                }
-            } elseif (yog_mysql_field_len($result, $j) <= 65535) {
-                if ($textblob == "TEXT") {
-                    $data = "mediumtext";
-                } else {
-                    $data = "mediumblob";
-                }
-            } else {
-                if ($textblob == "TEXT") {
-                    $data = "longtext";
-                } else {
-                    $data = "longblob";
-                }
-            }
-            break;
-
-        case "date":
-            $data = "date";
-            break;
-
-        case "time":
-            $data = "time";
-            break;
-
-        case "datetime":
-            $data = "datetime";
-            break;
-    }
-    return (convertxmlchars($data));
-}
-
 /* Output extra info used by SQLyog internally */
 function HandleExtraInfo($mysql, $value)
 {
@@ -253,13 +184,7 @@ function CreateXMLFromResult($mysql, $value)
     yogFullLog("yog_mysql_num_rows in ExecuteSingleQuery");
 
     // check if the query is not a result returning query
-    $isNotResultQuery = 0;
-    if (VariablesEntity::getSingleInstance()->getMysqlExtension() === "mysqli") {
-        ($value['result'] === 1) ? $isNotResultQuery = 1 : $isNotResultQuery = 0;
-    } else {
-        ($value['result'] == 1) ? $isNotResultQuery = 1 : $isNotResultQuery = 0;
-    }
-
+    $isNotResultQuery = ($value['result'] === 1) ? 1 : 0;
     $numrows = 0;
     $numfields = 0;
 
@@ -823,10 +748,6 @@ function ProcessQuery()
     mysqli_close($cnxMysql);
     $xmlOutput->echoXmlClose();
 }
-
-
-
-
 
 /* we check if all the external libraries support i.e. expat and mysql in our case is built in or not */
 if ($phpExtensions->areExtensionsLoaded()) {
