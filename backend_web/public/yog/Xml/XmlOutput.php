@@ -40,9 +40,14 @@ final class XmlOutput
 
     private function getXmlError(string $errorCode, string $error): string
     {
-        $escapedError = $this->getEscapedCharsForXml($error);
         $tunnelVersion = ConstantEnum::TUNNEL_VERSION_13_21;
-        return "<result v=\"$tunnelVersion\"><e_i><e_n>$errorCode</e_n><e_d>$escapedError</e_d></e_i></result>";
+        $escapedError = $this->getEscapedCharsForXml($error);
+        $output = [
+            "<result v=\"$tunnelVersion\">",
+            "<e_i><e_n>$errorCode</e_n><e_d>$escapedError</e_d></e_i>",
+            "</result>"
+        ];
+        return $this->getAsString($output);
     }
 
     public function getXmlNoResult(PdoMysql $pdoMysql): string
