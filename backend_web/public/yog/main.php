@@ -14,13 +14,17 @@ use Yog\Xml\XmlInterpreter;
 use Yog\Xml\XmlOutput;
 use Yog\Xml\XmlSql;
 use Yog\Checkers\Mysql;
+use Yog\Xml\XmlInput;
 
 $httpRequest = HttpRequest::getInstance();
 $htmlOutput = HtmlOutput::getInstance();
 $variablesEntity = VariablesEntity::getSingleInstance();
 $variablesEntity->debugOn();
 
-if (!$httpRequest->getPhpInput() && !$httpRequest->isGarbageTestFromApp()) {
+if (
+    !($requestInput = $httpRequest->getPhpInput()) &&
+    !$httpRequest->isGarbageTestFromApp()
+) {
     $htmlOutput->echoHtmlForEmptyRequest();
     return;
 }
@@ -29,6 +33,10 @@ if ($httpRequest->isGarbageTestFromApp()) {
     $htmlOutput->echoErrorAppTunnelVersion();
     return;
 }
+
+$xmlInput = XmlInput::getInstance($requestInput ?? "");
+yogLog($xmlInput, "xmlInput");
+
 
 $phpExtensions = PhpExtensions::getInstance();
 $php = Php::getInstance();

@@ -7,6 +7,7 @@ require_once __DIR__ . "/Bootstrap/VariablesEntity.php";
 require_once __DIR__ . "/Http/HttpRequest.php";
 
 require_once __DIR__ . "/Xml/HtmlOutput.php";
+require_once __DIR__ . "/Xml/XmlInput.php";
 require_once __DIR__ . "/Xml/XmlOutput.php";
 require_once __DIR__ . "/Xml/XmlInterpreter.php";
 require_once __DIR__ . "/Xml/XmlSql.php";
