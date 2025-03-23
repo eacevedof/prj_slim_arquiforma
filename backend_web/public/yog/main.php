@@ -139,7 +139,7 @@ function HandleExtraInfo($mysql, $value)
 /* Process when only a single query is called. */
 function ExecuteSingleQuery($mysql, string $query): void
 {
-    yogLog("query-to-be-run: [$query]", "ExecuteSingleQuery");
+    yogLog("query-to-be-run: [\n$query\n]", "ExecuteSingleQuery");
 
     $result = yog_mysql_query($query, $mysql);
 
