@@ -71,4 +71,27 @@ final class XmlInput
         }
         return "";
     }
+
+    public function isQueryBatch(): int
+    {
+        $attributeValue = $this->getAttributeValue(
+            XmlTagEnum::QUERY,
+            XmlAttributeEnum::BATCH
+        );
+        if (!$attributeValue) return 0;
+
+        return (int) ($attributeValue === "1");
+    }
+
+    public function isValueInBase64(XmlTagEnum $tagEnum): int
+    {
+        $attributeValue = $this->getAttributeValue(
+            $tagEnum,
+            XmlAttributeEnum::BASE64
+        );
+        if (!$attributeValue) return false;
+
+        return (int) ($attributeValue === "1");
+    }
+
 }

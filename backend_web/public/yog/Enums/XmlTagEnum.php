@@ -11,7 +11,8 @@ enum XmlTagEnum: string
     case DB = "db";
     case CHARSET = "charset";
     case PORT = "port";
-    case QUERY_INFO = "query_info";
     case QUERY = "query";
+
     case QUERYLEN = "querylen";
+    case QUERY_INFO = "query_info";
 }

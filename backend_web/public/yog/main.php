@@ -47,8 +47,16 @@ if ($variablesEntity->isDebug()) {
     error_reporting(E_ALL);
 }
 
-$variablesEntity->setMysqlExtension( "mysqli");
 $variablesEntity->setXmlTagNameId( ConstantEnum::XML_NOSTATE);
+
+$variablesEntity->setHost($xmlInput->getInnerText(XmlTagEnum::HOST));
+$variablesEntity->setDb($xmlInput->getInnerText(XmlTagEnum::DB));
+$variablesEntity->setCharset($xmlInput->getInnerText(XmlTagEnum::CHARSET));
+$variablesEntity->setUsername($xmlInput->getInnerText(XmlTagEnum::USER));
+$variablesEntity->setPwd($xmlInput->getInnerText(XmlTagEnum::PASSWORD));
+$variablesEntity->setPort($xmlInput->getInnerText(XmlTagEnum::PORT));
+//$variablesEntity->setQuery($xmlInput->getInnerText(XmlTagEnum::QUERY));
+
 
 /* check whether global variables are registered or not */
 if (!get_cfg_var("register_globals")) {
@@ -555,35 +563,6 @@ function xmlHandlerCharData($parser, $tagInnerText): void
         yogLog($tagInnerText, "charHandler.base64 xml-state: ($xmlTagId)");
     }
 
-    if ($xmlTagId === ConstantEnum::XML_HOST) {
-        $variablesEntity->setHost($variablesEntity->getHost().$tagInnerText);
-        return;
-    }
-
-    if ($xmlTagId === ConstantEnum::XML_DB) {
-        $variablesEntity->setDb($variablesEntity->getDb(). $tagInnerText);
-        return;
-    }
-
-    if ($xmlTagId === ConstantEnum::XML_CHARSET) {
-        $variablesEntity->setCharset($variablesEntity->getCharset().$tagInnerText);
-        return;
-    }
-
-    if ($xmlTagId === ConstantEnum::XML_USER) {
-        $variablesEntity->setUsername($variablesEntity->getUsername().$tagInnerText);
-        return;
-    }
-
-    if ($xmlTagId === ConstantEnum::XML_PWD) {
-        $variablesEntity->setPwd($variablesEntity->getPwd().$tagInnerText);
-        return;
-    }
-
-    if ($xmlTagId === ConstantEnum::XML_PORT) {
-        $variablesEntity->setPort($variablesEntity->getPort().$tagInnerText);
-        return;
-    }
 
     if ($xmlTagId === ConstantEnum::XML_QUERY) {
         $variablesEntity->setQuery(
