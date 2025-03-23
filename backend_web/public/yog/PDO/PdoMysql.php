@@ -107,7 +107,8 @@ final class PdoMysql
             }
             while ($this->statement->nextRowset());
 
-        } catch (PDOException $e) {
+        }
+        catch (PDOException $e) {
             $this->setErrorByException($e);
         }
         return $this->result;

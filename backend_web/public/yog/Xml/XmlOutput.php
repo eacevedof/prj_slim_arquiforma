@@ -47,8 +47,9 @@ final class XmlOutput
         return implode("", $output);
     }
 
-    public function getXmlNoResult(PdoMysql $pdoMysql, string $tunnelVersion): string
+    public function getXmlNoResult(PdoMysql $pdoMysql): string
     {
+        $tunnelVersion = ConstantEnum::TUNNEL_VERSION_13_21;
         $output = [
             "<result v=\"$tunnelVersion\">",
             "<e_i></e_i>",
@@ -58,24 +59,23 @@ final class XmlOutput
         return implode("", $output);
     }
 
-    public function CreateXMLFromResult(PdoMysql $pdoMysql, string $tunnelVersion): string
+    public function CreateXMLFromResult(PdoMysql $pdoMysql): string
     {
-        $statement = $pdoMysql->getStatement();
-        $isResultQuery = !$pdoMysql->isResultQuery();
         $nunRows = 0;
         $numFields = 0;
 
-        if ($statement) {
+        if ($statement = $pdoMysql->getStatement()) {
             $nunRows = $statement->rowCount();
             $numFields = $statement->columnCount();
         }
 
+        $isResultQuery = $pdoMysql->isResultQuery();
         if (!$isResultQuery || (!$nunRows && !$numFields)) {
-            return $this->getXmlNoResult($pdoMysql, $tunnelVersion);
+            return $this->getXmlNoResult($pdoMysql);
         }
 
         $xml = [
-            $this->getXmlDescribe($pdoMysql, $tunnelVersion)
+            $this->getXmlDescribe($pdoMysql)
         ];
 
 
@@ -99,8 +99,9 @@ final class XmlOutput
         return "";
     }
 
-    private function getXmlDescribe(PdoMysql $pdoMysql, string $tunnelVersion): string
+    private function getXmlDescribe(PdoMysql $pdoMysql): string
     {
+        $tunnelVersion = ConstantEnum::TUNNEL_VERSION_13_21;
         $numFields = count($pdoMysql->getFields());
         $output = [
             "<result v=\"$tunnelVersion\">",

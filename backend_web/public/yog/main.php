@@ -155,7 +155,7 @@ function ExecuteSingleQuery($mysql, string $query): void
     }
 }
 
-function CreateXMLFromResult($mysql, $value)
+function CreateXMLFromResult($mysql, $qResult)
 {
     // $value['result'], $value['ar']
     /* query execute was successful so we need to echo the correct xml */
@@ -163,20 +163,20 @@ function CreateXMLFromResult($mysql, $value)
     yogFullLog("yog_mysql_num_rows in ExecuteSingleQuery");
 
     // check if the query is not a result returning query
-    $isNotResultQuery = ($value['result'] === 1) ? 1 : 0;
+    $isNotResultQuery = ($qResult['result'] === 1) ? 1 : 0;
     $numrows = 0;
     $numfields = 0;
 
-    if (!is_int($value['result'])) {
-        $numrows = mysqli_num_rows($value['result']);
-        $numfields = mysqli_num_fields($value['result']);
+    if (!is_int($qResult['result'])) {
+        $numrows = mysqli_num_rows($qResult['result']);
+        $numfields = mysqli_num_fields($qResult['result']);
     }
 
     if ($isNotResultQuery  || (!$numrows && !$numfields)) {//
         /* is a non-result query */
         echo "<result v=\"" . ConstantEnum::TUNNEL_VERSION_13_21 . "\">";
         echo "<e_i></e_i>";
-        HandleExtraInfo($mysql, $value);
+        HandleExtraInfo($mysql, $qResult);
         echo "<f_i c=\"0\"></f_i><r_i></r_i></result>";
         return;
     }
@@ -186,24 +186,24 @@ function CreateXMLFromResult($mysql, $value)
     echo "<e_i></e_i>";
 
     /* add some extra info */
-    HandleExtraInfo($mysql, $value);
+    HandleExtraInfo($mysql, $qResult);
 
     /* add the field count information */
-    $fieldcount = mysqli_num_fields($value['result']);
+    $fieldcount = mysqli_num_fields($qResult['result']);
     print($fieldcount);
     echo "<f_i c=\"$fieldcount\">";
 
     /* retrieve information about each fields */
     $i = 0;
     while ($i < $fieldcount) {
-        $meta = mysqli_fetch_field($value['result']);
+        $meta = mysqli_fetch_field($qResult['result']);
 
         echo "<f>";
         echo "<n>" . convertxmlchars($meta->name) . "</n>";
         echo "<t>" . convertxmlchars($meta->table) . "</t>";
         echo "<m>" . convertxmlchars($meta->max_length) . "</m>";
         echo "<d></d>";
-        echo "<ty>" . yog_mysql_field_type($value['result'], $i) . "</ty>";
+        echo "<ty>" . yog_mysql_field_type($qResult['result'], $i) . "</ty>";
         echo "</f>";
 
         $i++;
@@ -216,8 +216,8 @@ function CreateXMLFromResult($mysql, $value)
 
     echo "<r_i c=\"$numrows\">";
     /* add up each row information */
-    while ($row = mysqli_fetch_array($value['result'])) {
-        $lengths = mysqli_fetch_lengths($value['result']);
+    while ($row = mysqli_fetch_array($qResult['result'])) {
+        $lengths = mysqli_fetch_lengths($qResult['result']);
 
         /* start of a row */
         echo "<r>";
