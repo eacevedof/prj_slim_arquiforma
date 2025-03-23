@@ -13,5 +13,6 @@ require_once __DIR__ . "/Xml/XmlSql.php";
 
 require_once __DIR__ . "/Checkers/PhpExtensions.php";
 require_once __DIR__ . "/Checkers/Php.php";
+require_once __DIR__ . "/Checkers/Mysql.php";
 
 require_once __DIR__ . "/PDO/PdoMysql.php";

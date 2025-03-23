@@ -13,6 +13,7 @@ use Yog\Xml\HtmlOutput;
 use Yog\Xml\XmlInterpreter;
 use Yog\Xml\XmlOutput;
 use Yog\Xml\XmlSql;
+use Yog\Checkers\Mysql;
 
 $httpRequest = HttpRequest::getInstance();
 //$httpRequest->logRequest();
@@ -23,6 +24,8 @@ $php = Php::getInstance();
 $variablesEntity = VariablesEntity::getSingleInstance();
 $variablesEntity->debugOn();
 
+$chkMysql = Mysql::getInstance();
+
 set_time_limit(0);
 error_reporting(0);
 ini_set("display_errors", 0); //siempre tiene q estar en 0 sino rompe el xml por los warnings
@@ -31,15 +34,13 @@ if ($variablesEntity->isDebug()) {
     error_reporting(E_ALL);
 }
 
-$variablesEntity->setMysqlExtension("-1");
-/* Check for the PHP_MYSQL/PHP_MYSQLI extension loaded */
-if (extension_loaded('mysqli')) {
-    $variablesEntity->setMysqlExtension( "mysqli");
-}
-elseif (extension_loaded('mysql')) {
-    $variablesEntity->setMysqlExtension( "mysql");
-}
+$variablesEntity->setMysqlExtension( "mysqli");
 $variablesEntity->setXmlTagNameId( ConstantEnum::XML_NOSTATE);
+
+/* check whether global variables are registered or not */
+if (!get_cfg_var("register_globals")) {
+    extract($httpRequest->getRequest());
+}
 
 function yog_mysql_connect($host, $port, $username, $password, $db_name = "")
 {
@@ -56,11 +57,12 @@ function yog_mysql_connect($host, $port, $username, $password, $db_name = "")
     return $ret;
 }
 
-function yog_mysql_field_type($result, $offset)
+function yog_mysql_field_type($result, $fieldPosition): string
 {
-    $tmp = mysqli_fetch_field_direct($result, $offset);
-    $ret = GetCorrectDataTypeMySQLI($tmp->type);
-    return $ret;
+    $chkMysql = Mysql::getInstance();
+    $tmp = mysqli_fetch_field_direct($result, $fieldPosition);
+    $literalType = $chkMysql->getLiteralMysqlTypeByMysqlTypeId($tmp->type);
+    return $literalType;
 }
 
 function yog_mysql_field_len($result, $offset)
@@ -135,98 +137,10 @@ function yog_mysql_query($query, $db_link): array
     return $ret;
 }
 
-function GetCorrectDataTypeMySQLI($type)
-{
-    switch($type) {
-        case MYSQLI_TYPE_TINY:
-            $data = "tinyint";
-            break;
-        case MYSQLI_TYPE_SHORT:
-            $data = "shortint";
-            break;
-        case MYSQLI_TYPE_LONG:
-            $data = "int";
-            break;
-        case MYSQLI_TYPE_FLOAT:
-            $data = "float";
-            break;
-        case MYSQLI_TYPE_DOUBLE:
-            $data = "double";
-            break;
-        case MYSQLI_TYPE_NULL:
-            $data = "default null";
-            break;
-        case MYSQLI_TYPE_TIMESTAMP:
-            $data = "timestamp" ;
-            break;
-        case MYSQLI_TYPE_BIT:
-            $data = "bit" ;
-            break;
-        case MYSQLI_TYPE_LONGLONG:
-            $data = "bigint";
-            break;
-        case MYSQLI_TYPE_INT24:
-            $data = "mediumint";
-            break;
-        case MYSQLI_TYPE_DATE:
-            $data = "date";
-            break;
-        case MYSQLI_TYPE_TIME:
-            $data = "time";
-            break;
-        case MYSQLI_TYPE_DATETIME:
-            $data = "datetime";
-            break;
-        case MYSQLI_TYPE_YEAR:
-            $data = "year";
-            break;
-        case MYSQLI_TYPE_NEWDATE:
-            $data = "date";
-            break;
-        case MYSQLI_TYPE_ENUM:
-            $data = "enum";
-            break;
-        case MYSQLI_TYPE_SET:
-            $data = "set";
-            break;
-        case MYSQLI_TYPE_TINY_BLOB:
-            $data = "tinyblob";
-            break;
-        case MYSQLI_TYPE_MEDIUM_BLOB:
-            $data = "mediumblob";
-            break;
-        case MYSQLI_TYPE_LONG_BLOB:
-            $data = "longblob";
-            break;
-        case MYSQLI_TYPE_BLOB:
-            $data = "blob";
-            break;
-        case MYSQLI_TYPE_VAR_STRING:
-            $data = "varchar";
-            break;
-        case MYSQLI_TYPE_STRING:
-            $data = "char";
-            break;
-        case MYSQLI_TYPE_GEOMETRY:
-            $data = "geometry";
-            break;
-        case MYSQLI_TYPE_NEWDECIMAL:
-            $data = "newdecimal";
-            break;
-        case MYSQLI_TYPE_JSON:
-            $data = "json";
-            break;
-
-    }
-    return ($data);
-}
 /* function finds and returns the correct type understood by MySQL C API() */
-
 function GetCorrectDataType($result, $j)
 {
     $data   = null;
-
-    yogFullLog("Enter GetCorrectDataType");
 
     switch(yog_mysql_field_type($result, $j)) {
         case "int":
@@ -289,9 +203,6 @@ function GetCorrectDataType($result, $j)
             $data = "datetime";
             break;
     }
-
-    yogFullLog("Exit GetCorrectDataType");
-
     return (convertxmlchars($data));
 }
 
@@ -389,15 +300,7 @@ function CreateXMLFromResult($mysql, $value)
         echo "<t>" . convertxmlchars($meta->table) . "</t>";
         echo "<m>" . convertxmlchars($meta->max_length) . "</m>";
         echo "<d></d>";
-        switch (VariablesEntity::getSingleInstance()->getMysqlExtension()) {
-            case "mysql":
-                echo "<ty>" . GetCorrectDataType($value['result'], $i) . "</ty>";
-                break;
-            case "mysqli":
-                echo "<ty>" . yog_mysql_field_type($value['result'], $i) . "</ty>";
-                break;
-        }
-
+        echo "<ty>" . yog_mysql_field_type($value['result'], $i) . "</ty>";
         echo "</f>";
 
         $i++;
@@ -817,28 +720,6 @@ function convertxmlchars($string, $called_by = "")
     return $result;
 }
 
-
-/** Detect if the user's PHP/LibXML is affected by the following bug: -
- *  http://bugs.php.net/bug.php?id=45996
- */
-function LibXml2IsBuggy(): bool
-{
-    return false;
-
-    $variablesEntity = VariablesEntity::getSingleInstance();
-    $variablesEntity->setLibxml2TestQuery("");
-
-    yogLog($testSqlInXml = XmlSql::getInstance()->getXmlTestSql(), "testSqlInXml to be run");
-    XmlInterpreter::getInstance()->executeXmlHandlersFunctionsOrOutputError($testSqlInXml);
-
-    if (strcasecmp($variablesEntity->getLibxml2TestQuery(), "select a") === 0) {
-        //This PHP/LibXML is buggy!
-        return true;
-    }
-    //Not buggy!
-    return false;
-}
-
 /* Process the  query*/
 function ProcessQuery()
 {
@@ -944,14 +825,9 @@ function ProcessQuery()
     $xmlOutput->echoXmlClose();
 }
 
-if (!defined("MYSQLI_TYPE_BIT")) {
-    define("MYSQLI_TYPE_BIT", 16);
-}
 
-/* check whether global variables are registered or not */
-if (!get_cfg_var("register_globals")) {
-    extract($httpRequest->getRequest());
-}
+
+
 
 /* we check if all the external libraries support i.e. expat and mysql in our case is built in or not */
 if ($phpExtensions->areExtensionsLoaded()) {
