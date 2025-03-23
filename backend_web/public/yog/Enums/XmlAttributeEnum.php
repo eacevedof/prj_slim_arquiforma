@@ -4,6 +4,6 @@ namespace Yog\Enums;
 
 enum XmlAttributeEnum: string
 {
-    case E = "e";
+    case BASE64 = "e";
     case BATCH = "b";
 }

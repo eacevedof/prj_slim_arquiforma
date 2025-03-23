@@ -37,7 +37,6 @@ if ($httpRequest->isGarbageTestFromApp()) {
 $xmlInput = XmlInput::getInstance($requestInput ?? "");
 yogLog($xmlInput, "xmlInput");
 
-
 $phpExtensions = PhpExtensions::getInstance();
 $php = Php::getInstance();
 $chkMysql = Mysql::getInstance();
