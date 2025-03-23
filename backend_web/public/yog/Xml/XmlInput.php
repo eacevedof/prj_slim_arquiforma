@@ -15,29 +15,32 @@ final class XmlInput
         string $xmlString
     )
     {
-        $this->xmlString = $xmlString;
         $this->domDocument = new DOMDocument();
-        if ($xmlString) {
-            $xmlString = $this->getCleanedXml($xmlString);
-            $isLoaded = $this->domDocument->loadXML($xmlString);
-            if (!$isLoaded) {
-                throw new \Exception("Failed to load XML string.\n $xmlString");
-            }
+        $this->xmlString = trim($xmlString);
+        if (!$xmlString) return;
+
+        $xmlString = $this->getCleanedXml($xmlString);
+        $isLoaded = $this->domDocument->loadXML($xmlString);
+
+        if (!$isLoaded) {
+            throw new \Exception("Failed to load XML string.\n $xmlString");
         }
     }
 
-    private function getCleanedXml(string $xmlDoc): string
+    private function getCleanedXml(string $xmlString): string
     {
-        $xml = str_replace("<xml>", "", $xmlDoc);
-        $xml = str_replace("</xml>", "", $xml);
+        $xmlString = str_replace(" e='0'", " e=\"0\"", $xmlString);
+        $xmlString = str_replace(" e='1'", " e=\"1\"", $xmlString);
 
-        $xml = str_replace(" e=\\'0\\'", " e=\"0\"", $xml);
-        $xml = str_replace(" e=\\'1\\'", " e=\"1\"", $xml);
+        $xmlString = str_replace(" b='0'", " b=\"0\"", $xmlString);
+        $xmlString = str_replace(" b='1'", " b=\"1\"", $xmlString);
 
-        $xml = str_replace(" b=\\'0\\'", " b=\"0\"", $xml);
-        $xml = str_replace(" b=\\'1\\'", " b=\"1\"", $xml);
+        //$xmlDoc = str_replace("<xml>", "", $xmlDoc);
+        //$xmlDoc = str_replace("</xml>", "", $xmlDoc);
 
-        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n".$xml;
+        return trim(
+            $xmlString
+        );
     }
 
     public static function getInstance(string $xmlString): self
