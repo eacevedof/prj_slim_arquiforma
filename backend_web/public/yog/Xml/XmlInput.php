@@ -15,7 +15,7 @@ final class XmlInput
         string $xmlString
     )
     {
-        $this->domDocument = new DOMDocument();
+        $this->domDocument = new DOMDocument("1.0", "utf-8");
         $this->xmlString = trim($xmlString);
         if (!$xmlString) return;
 
@@ -35,8 +35,10 @@ final class XmlInput
         $xmlString = str_replace(" b='0'", " b=\"0\"", $xmlString);
         $xmlString = str_replace(" b='1'", " b=\"1\"", $xmlString);
 
-        //$xmlDoc = str_replace("<xml>", "", $xmlDoc);
-        //$xmlDoc = str_replace("</xml>", "", $xmlDoc);
+        $xmlString = str_replace("<xml>", "<root>", $xmlString);
+        $xmlString = str_replace("</xml>", "</root>", $xmlString);
+
+        $xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>".$xmlString;
 
         return trim(
             $xmlString
@@ -50,8 +52,9 @@ final class XmlInput
 
     public function getInnerText(XmlTagEnum $xmlTagEnum): string
     {
-        $elements = $this->domDocument->getElementsByTagName($xmlTagEnum->value);
         yogLog($this->domDocument->saveXML(), "elements->length");
+        $elements = $this->domDocument->getElementsByTagName($xmlTagEnum->value);
+        yogLog($elements, "elements");
         if ($elements->length) return "";
 
         return $elements->item(0)->nodeValue ?? "";
