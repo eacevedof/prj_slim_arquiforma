@@ -11,6 +11,7 @@ require_once __DIR__ . "/Enums/XmlTagEnum.php";
 require_once __DIR__ . "/Xml/HtmlOutput.php";
 require_once __DIR__ . "/Xml/XmlInput.php";
 require_once __DIR__ . "/Xml/XmlOutput.php";
+require_once __DIR__ . "/Xml/XmlResponse.php";
 require_once __DIR__ . "/Xml/XmlInterpreter.php";
 require_once __DIR__ . "/Xml/XmlSql.php";
 

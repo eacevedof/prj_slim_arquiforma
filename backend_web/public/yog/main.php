@@ -16,6 +16,7 @@ use Yog\Xml\XmlOutput;
 use Yog\Xml\XmlSql;
 use Yog\Checkers\Mysql;
 use Yog\Xml\XmlInput;
+use Yog\Xml\XmlResponse;
 
 $httpRequest = HttpRequest::getInstance();
 $htmlOutput = HtmlOutput::getInstance();
