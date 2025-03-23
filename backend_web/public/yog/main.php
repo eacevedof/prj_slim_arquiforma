@@ -16,13 +16,23 @@ use Yog\Xml\XmlSql;
 use Yog\Checkers\Mysql;
 
 $httpRequest = HttpRequest::getInstance();
-//$httpRequest->logRequest();
+$htmlOutput = HtmlOutput::getInstance();
+$variablesEntity = VariablesEntity::getSingleInstance();
+$variablesEntity->debugOn();
+
+if (!$httpRequest->getPhpInput() && !$httpRequest->isGarbageTestFromApp()) {
+    $htmlOutput->echoHtmlForEmptyRequest();
+    return;
+}
+
+if ($httpRequest->isGarbageTestFromApp()) {
+    $htmlOutput->echoErrorAppTunnelVersion();
+    return;
+}
 
 $phpExtensions = PhpExtensions::getInstance();
 $php = Php::getInstance();
-/* uncomment this line to create a debug log */
-$variablesEntity = VariablesEntity::getSingleInstance();
-$variablesEntity->debugOn();
+
 
 $chkMysql = Mysql::getInstance();
 
@@ -598,7 +608,7 @@ function ProcessQuery()
             return;
         }
 
-        $htmlOutput->echoHtmlWithYogVersion();
+        $htmlOutput->echoHtmlForEmptyRequest();
         return;
     }
 
@@ -613,7 +623,7 @@ function ProcessQuery()
     yogLog($xmlDbAndQuery, "xmlDbAndQuery");
     if (!$xmlDbAndQuery) {
         yogLog("empty query showing yog version xml");
-        $htmlOutput->echoHtmlWithYogVersion();
+        $htmlOutput->echoHtmlForEmptyRequest();
         return;
     }
 
@@ -660,7 +670,7 @@ function ProcessQuery()
             $pdoHelper->getErrorCode(),
             $pdoHelper->getError()
         );
-        yogFullLog($pdoHelper->getError(), "linea: 1135");
+        yogFullLog($pdoHelper->getError(), "linea: 668");
         $xmlOutput->echoXmlClose();
         return;
     }

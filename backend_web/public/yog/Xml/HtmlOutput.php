@@ -12,7 +12,7 @@ final class HtmlOutput
         return new self();
     }
 
-    public function echoHtmlWithYogVersion(
+    public function echoHtmlForEmptyRequest(
         string $extraMessage = ""
     ): void
     {
