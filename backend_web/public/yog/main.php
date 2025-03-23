@@ -59,9 +59,8 @@ function yog_mysql_connect($host, $port, $username, $password, $db_name = "")
 
 function yog_mysql_field_type($result, $fieldPosition): string
 {
-    $chkMysql = Mysql::getInstance();
     $tmp = mysqli_fetch_field_direct($result, $fieldPosition);
-    $literalType = $chkMysql->getLiteralMysqlTypeByMysqlTypeId($tmp->type);
+    $literalType = Mysql::getInstance()->getLiteralMysqlTypeByMysqlTypeId($tmp->type);
     return $literalType;
 }
 
