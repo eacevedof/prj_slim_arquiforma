@@ -1,0 +1,18 @@
+{
+  "name": "tpl",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "comment": "issue nodemon wsl https://github.com/microsoft/WSL/issues/4739, hay que usar legacy-watch porque sino no detecta los cambios",
+    "build:styles": "nodemon --ext php,css --legacy-watch --exec \"pnpx @tailwindcss/cli -i ./input.css -o ./assets/css/tw-4.1.5.css\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.10.0",
+  "dependencies": {
+    "@tailwindcss/cli": "^4.1.5",
+    "tailwindcss": "^4.1.5"
+  }
+}

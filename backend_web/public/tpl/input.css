@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+@font-face {
+    font-family: "RobotoSlabRegular";
+    src: url("/tpl/assets/fonts/roboto-slab/woff2/RobotoSlab-Regular.woff2") format("woff2");
+    font-style: normal;
+    font-weight: 100 1000;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "RobotoSlabExtraBold";
+    src: url("/tpl/assets/fonts/roboto-slab/woff2/RobotoSlab-ExtraBold.woff2") format("woff2");
+    font-style: normal;
+    font-weight: 1001 2000;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "RobotoSlabBlack";
+    src: url("/tpl/assets/fonts/roboto-slab/woff2/RobotoSlab-Black.woff2") format("woff2");
+    font-style: normal;
+    font-weight: 2001 3000;
+    font-display: swap;
+}
+
+
+@font-face {
+    font-family: "PoppinsRegular";
+    src: url("/tpl/assets/fonts/poppins/woff2/Poppins-Regular.woff2") format("woff2");
+    font-style: normal;
+    font-weight: 100 1000;
+    font-display: swap;
+}
+@font-face {
+    font-family: "PoppinsBold";
+    src: url("/tpl/assets/fonts/poppins/woff2/Poppins-ExtraBold.woff2") format("woff2");
+    font-style: normal;
+    font-weight: 100 200;
+    font-display: swap;
+}
+@font-face {
+    font-family: "PoppinsBlack";
+    src: url("/tpl/assets/fonts/poppins/woff2/Poppins-Black.woff2") format("woff2");
+    font-style: normal;
+    font-weight: 2001 3000;
+    font-display: swap;
+}
+
+
+@theme {
+    --color-arqui-red: #e60012;
+    --color-arqui-black: #171C28;
+    --color-arqui-gray: #4B5563;
+
+    --breakpoint-xs: 480px;
+    --breakpoint-sm: 640px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 1024px;
+    --breakpoint-xl: 1280px;
+    --breakpoint-2xl: 1536px;
+
+    --font-sans: "PoppinsRegular", system-ui, sans-serif;
+
+    --font-arqui-roboto: "RobotoSlabRegular", system-ui, serif;
+    --font-arqui-roboto-bold: "RobotoSlabExtraBold", system-ui, serif;
+    --font-arqui-roboto-black: "RobotoSlabBlack", system-ui, serif;
+
+    --font-arqui-poppins: "PoppinsRegular", system-ui, serif;
+    --font-arqui-poppins-bold: "PoppinsBold", system-ui, serif;
+    --font-arqui-poppins-black: "PoppinsBlack", system-ui, serif;
+
+}
+

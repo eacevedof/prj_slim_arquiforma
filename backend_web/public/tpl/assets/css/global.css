@@ -1,0 +1,83 @@
+.eaf {
+    border: 1px solid #e60012 !important;
+}
+.eaf-1 {
+    border: 1px solid #58e600 !important;
+}
+.eaf-2 {
+    border: 1px solid #9b30d1 !important;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+.triangle-corner {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 50px 0 0 50px;
+    border-color: transparent transparent transparent #e60012;
+}
+
+.service-card:hover img {
+    transform: scale(1.05);
+    transition: transform 0.5s ease;
+}
+
+.service-card img {
+    transition: transform 0.5s ease;
+}
+
+a:focus, button:focus {
+    outline: 2px solid #e60012;
+    outline-offset: 2px;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #e60012;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #b30000;
+}
+
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: #e60012;
+    color: white;
+    padding: 8px;
+    z-index: 100;
+    transition: top 0.3s;
+}
+
+.skip-link:focus {
+    top: 0;
+}
+
+
+input, textarea{
+    background-color: white;
+}
+
+.opacity-0 {
+    opacity: 0;
+}
+
+.opacity-1 {
+    opacity: 1;
+}
+
+.arqui-service-card {
+    border-left: 5px solid black;
+}

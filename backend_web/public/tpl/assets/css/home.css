@@ -1,0 +1,36 @@
+#div-red-triangle {
+    bottom: -85px; /* Ajusta según sea necesario */
+
+}
+/* Add grey corners to the button */
+#a-contact::before,
+#a-contact::after {
+    content: '';
+    position: absolute;
+    z-index: 1;
+}
+
+#a-contact::before {
+    top: 0;
+    left: 0;
+    width: 20px;
+    height: 20px;
+    background-color: #171C28;
+    clip-path: polygon(0 0, 0% 100%, 100% 0);
+}
+
+#a-contact::after {
+    bottom: 0;
+    right: 0;
+    width: 20px;
+    height: 20px;
+    background-color: #666666;
+    clip-path: polygon(100% 100%, 0% 100%, 100% 0);
+}
+
+/* Ensure the button has relative positioning */
+#a-contact {
+    position: relative;
+    overflow: hidden;
+}
+

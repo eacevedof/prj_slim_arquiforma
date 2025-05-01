@@ -15,3 +15,14 @@ gitpush: ## git push m=any message
 gp: ## git push m=any message
 	clear;
 	git add .; git commit -m "$(m)"; git push;
+
+tw: ## git push to the current branch
+	clear;
+	# cd public/tpl; pnpx @tailwindcss/cli -i ./input.css -o ./assets/css/tw-4.1.5.css --watch
+	cd backend_web/public/tpl; npm run build:styles
+
+run-app-win: ## start serving app in localhost:8181
+	cd backend_web; php -c php.ini -S localhost:8181 -t public
+
+run-app-wsl: ## start serving app in localhost:8181
+	cd backend_web; php -S localhost:8181 -t public
