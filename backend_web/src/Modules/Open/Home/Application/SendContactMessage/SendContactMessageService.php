@@ -3,8 +3,8 @@
 namespace App\Modules\Open\Home\Application\SendContactMessage;
 
 use App\Modules\Shared\Infrastructure\Components\Hasher\Hasher;
-use App\Modules\Shared\Infrastructure\Traits\LogTrait;
 use App\Modules\Shared\Infrastructure\Components\Mailer\Mailer;
+use App\Modules\Shared\Infrastructure\Traits\LogTrait;
 
 use App\Modules\Open\Home\Domain\Exceptions\HomeException;
 
@@ -87,13 +87,13 @@ final readonly class SendContactMessageService
             //->addEmailTo($this->sendContactMessageDto->getEmail())
             ->addEmailTo("eacevedof@gmail.com")
             ->setSubject($this->sendContactMessageDto->getSubject())
-            ->setContent($this->sendContactMessageDto->getMessage())
+            ->setBodyPlain($this->sendContactMessageDto->getMessage())
             ->send()
             ->getErrors();
 
         if ($errors) {
-            $this->logError("Mailer error: " . implode(", ", $errors));
-            $this->logDebug($this->sendContactMessageDto->toArray(), "email with errors");
+            $this->logError(implode(", ", $errors), self::class);
+            $this->logError($this->sendContactMessageDto->toArray(), self::class);
             HomeException::unexpectedErrorOnRequest("some error occurred");
         }
     }

@@ -1,3 +1,0 @@
-- composer create-project slim/slim-skeleton [your-app-name]
-- start localhost server in 8181: 
-- `make run-app`
