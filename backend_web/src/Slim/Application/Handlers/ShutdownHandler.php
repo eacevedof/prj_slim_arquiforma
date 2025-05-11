@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace App\Slim\Application\Handlers;
 
-use App\Slim\Application\ResponseEmitter\ResponseEmitter;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpInternalServerErrorException;
 
-class ShutdownHandler
+use App\Slim\Application\ResponseEmitter\ResponseEmitter;
+
+final class ShutdownHandler
 {
     private Request $request;
 
@@ -34,7 +35,7 @@ class ShutdownHandler
             $errorLine = $error['line'];
             $errorMessage = $error['message'];
             $errorType = $error['type'];
-            $message = 'An error while processing your request. Please try again later.';
+            $message = 'An error while processing your request. Please try again later. (sdh)';
 
             if ($this->displayErrorDetails) {
                 switch ($errorType) {

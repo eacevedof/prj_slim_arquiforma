@@ -85,7 +85,7 @@ trait LogTrait
     {
         $pathLogs = PATH_ROOT . "/logs";
         if (!is_dir($pathLogs)) mkdir($pathLogs, 0777, true);
-        file_put_contents("$pathLogs/$fileName", $content);
+        file_put_contents("$pathLogs/$fileName", "\n$content", FILE_APPEND);
     }
 
     private function getFileName(string $fileName, string $ext = "log"): string

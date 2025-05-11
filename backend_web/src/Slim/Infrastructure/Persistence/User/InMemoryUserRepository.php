@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Slim\Infrastructure\Persistence\User;
 
 use App\Slim\Domain\User\User;
+use App\Slim\Domain\User\UserRepositoryInterface;
 use App\Slim\Domain\User\UserNotFoundException;
-use App\Slim\Domain\User\UserRepository;
 
-class InMemoryUserRepository implements UserRepository
+final class InMemoryUserRepository implements UserRepositoryInterface
 {
     /**
      * @var User[]
@@ -21,11 +21,11 @@ class InMemoryUserRepository implements UserRepository
     public function __construct(array $users = null)
     {
         $this->users = $users ?? [
-            1 => new User(1, 'bill.gates', 'Bill', 'Gates'),
-            2 => new User(2, 'steve.jobs', 'Steve', 'Jobs'),
-            3 => new User(3, 'mark.zuckerberg', 'Mark', 'Zuckerberg'),
-            4 => new User(4, 'evan.spiegel', 'Evan', 'Spiegel'),
-            5 => new User(5, 'jack.dorsey', 'Jack', 'Dorsey'),
+            1 => new User(1, "bill.gates", "Bill", "Gates"),
+            2 => new User(2, "steve.jobs", "Steve", "Jobs"),
+            3 => new User(3, "mark.zuckerberg", "Mark", "Zuckerberg"),
+            4 => new User(4, "evan.spiegel", "Evan", "Spiegel"),
+            5 => new User(5, "jack.dorsey", "Jack", "Dorsey"),
         ];
     }
 

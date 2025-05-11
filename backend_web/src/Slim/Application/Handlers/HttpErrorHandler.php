@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Slim\Application\Handlers;
 
-use App\Slim\Application\Actions\ActionError;
-use App\Slim\Application\Actions\ActionPayload;
+
+use Throwable;
 use Psr\Http\Message\ResponseInterface as Response;
+
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpException;
 use Slim\Exception\HttpForbiddenException;
@@ -15,16 +16,24 @@ use Slim\Exception\HttpNotFoundException;
 use Slim\Exception\HttpNotImplementedException;
 use Slim\Exception\HttpUnauthorizedException;
 use Slim\Handlers\ErrorHandler as SlimErrorHandler;
-use Throwable;
 
-class HttpErrorHandler extends SlimErrorHandler
+use App\Slim\Application\Actions\ActionError;
+use App\Slim\Application\Actions\ActionPayload;
+
+use App\Modules\Shared\Infrastructure\Traits\LogTrait;
+
+final class HttpErrorHandler extends SlimErrorHandler
 {
+    use LogTrait;
+
     /**
      * @inheritdoc
      */
     protected function respond(): Response
     {
         $exception = $this->exception;
+        $this->logException($exception, self::class);
+
         $statusCode = 500;
         $error = new ActionError(
             ActionError::SERVER_ERROR,

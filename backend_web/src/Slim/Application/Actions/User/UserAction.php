@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace App\Slim\Application\Actions\User;
 
-use App\Slim\Application\Actions\Action;
-use App\Slim\Domain\User\UserRepository;
 use Psr\Log\LoggerInterface;
+use App\Slim\Application\Actions\Action;
+use App\Slim\Domain\User\UserRepositoryInterface;
 
 abstract class UserAction extends Action
 {
-    protected UserRepository $userRepository;
+    protected UserRepositoryInterface $userRepositoryInterface;
 
-    public function __construct(LoggerInterface $logger, \Domain\User\UserRepository $userRepository)
+    public function __construct(LoggerInterface $logger, UserRepositoryInterface $userRepository)
     {
         parent::__construct($logger);
-        $this->userRepository = $userRepository;
+        $this->userRepositoryInterface = $userRepository;
     }
 }

@@ -6,7 +6,7 @@ namespace App\Slim\Application\Actions\User;
 
 use Psr\Http\Message\ResponseInterface as Response;
 
-class ViewUserAction extends UserAction
+final class ViewUserAction extends UserAction
 {
     /**
      * {@inheritdoc}
@@ -14,9 +14,9 @@ class ViewUserAction extends UserAction
     protected function action(): Response
     {
         $userId = (int) $this->resolveArg('id');
-        $user = $this->userRepository->findUserOfId($userId);
+        $user = $this->userRepositoryInterface->findUserOfId($userId);
 
-        $this->logger->info("User of id `${userId}` was viewed.");
+        $this->logger->info("User of id `$userId` was viewed.");
 
         return $this->respondWithData($user);
     }

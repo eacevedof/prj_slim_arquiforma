@@ -12,6 +12,7 @@ use App\Slim\Application\Actions\User\ListUsersAction;
 use App\Slim\Application\Actions\User\ViewUserAction;
 
 use App\Modules\Open\Home\Infrastructure\Controllers\HomeController;
+use App\Modules\Open\Home\Infrastructure\Controllers\ContactController;
 
 return function (App $app) {
     $app->options("/{routes:.*}", function (Request $request, Response $response) {
@@ -25,11 +26,12 @@ return function (App $app) {
         return $response;
     });
     */
-
+    $app->post("/contact/send-message", [ContactController::class, "sendMessage"]);
     $app->get("/", HomeController::class);
 
     $app->group("/users", function (Group $group) {
         $group->get("", ListUsersAction::class);
         $group->get("/{id}", ViewUserAction::class);
     });
+
 };
