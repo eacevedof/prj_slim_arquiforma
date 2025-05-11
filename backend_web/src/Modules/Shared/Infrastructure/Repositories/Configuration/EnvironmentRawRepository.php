@@ -9,9 +9,10 @@ final class EnvironmentRawRepository
     private readonly array $envVars;
     private static ?self $instance = null;
 
-    private function __construct()
+    public function __construct()
     {
          $this->envVars = [
+             "app_key" => getenv("APP_KEY") ?: "Example151e28a26375030c37414ad8e499aeb7b0a3e88a",
              "app_name" => getenv("APP_NAME") ?: "App Name",
              "environment" => getenv("APP_ENV") ?: EnvironmentEnum::PRODUCTION,
              "timezone" => getenv("APP_TIMEZONE") ?: "UTC",
@@ -47,6 +48,11 @@ final class EnvironmentRawRepository
         return self::$instance;
     }
 
+    public function getAppKey(): string
+    {
+        return $this->envVars["app_key"] ?? "";
+    }
+
     public function getAppName(): string
     {
         return $this->envVars["app_name"] ?? "";
@@ -70,6 +76,26 @@ final class EnvironmentRawRepository
     public function getTimezone(): string
     {
         return $this->envVars["timezone"] ?? "";
+    }
+
+    public function getDbName(): string
+    {
+        return $this->envVars["db_name"] ?? "";
+    }
+
+    public function getEmailFrom1(): string
+    {
+        return $this->envVars["email_from1"] ?? "";
+    }
+
+    public function getEmailFrom2(): string
+    {
+        return $this->envVars["email_from2"] ?? "";
+    }
+
+    public function getEmailTo(): string
+    {
+        return $this->envVars["email_to"] ?? "";
     }
 
     public function isLocal(): bool
@@ -106,11 +132,6 @@ final class EnvironmentRawRepository
     public function getDbPass(): string
     {
         return $this->envVars["db_pass"] ?? "";
-    }
-
-    public function getDbName(): string
-    {
-        return $this->envVars["db_name"] ?? "";
     }
 
     public function getCookieName(): string
