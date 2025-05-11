@@ -2,10 +2,13 @@
 
 namespace App\Modules\Shared\Infrastructure\Components\Mailer;
 
+use App\Modules\Shared\Infrastructure\Traits\LogTrait;
 use Exception;
 
 final class Mailer extends AbstractMailer
 {
+    use LogTrait;
+
     private string $hashBoundary = "";
 
     public static function getInstance(): self
@@ -37,21 +40,18 @@ final class Mailer extends AbstractMailer
                 $emailBody .= $attachmentContent ?: "";
             }
 
-            $this->logPrint($this->emailsTo, "TO ->");
-            $this->logPrint($this->headers, "HEADER ->");
-            $this->logPrint($emailBody, "BODY ->");
-
             $emailsTo = implode(", ", $this->emailsTo);
             $isSent = mail($emailsTo, $this->subject, $emailBody, $strHeaders);
+
             if (!$isSent) {
-                $this->addError("Error sending email!");
+                $this->addError("error sending email. May be headers are wrong. Content-Type: text/plain or text/html");
                 $this->addErrors(error_get_last());
+                $this->addErrors($r = ["to" => $emailsTo, "subject" => $this->subject, "email_body"=> $emailBody, "headers" => $strHeaders]);
             }
         }
         catch (Exception $e) {
             $this->addError($e->getMessage());
         }
-
         return $this;
     }
 
@@ -75,9 +75,17 @@ final class Mailer extends AbstractMailer
     {
         $headers = [
             "MIME-Version: 1.0",
-            "Content-Type: text/html; charset=\"UTF-8\"",
+            "Content-Type: text/plain; charset=\"UTF-8\"",
             "Content-Transfer-Encoding: 8bit",
         ];
+
+        if ($this->isHtmlBody) {
+            $headers = [
+                "MIME-Version: 1.0",
+                "Content-Type: text/html; charset=\"UTF-8\"",
+                "Content-Transfer-Encoding: 8bit",
+            ];
+        }
 
         if ($this->hashBoundary) {
             $headers = [
@@ -149,16 +157,6 @@ final class Mailer extends AbstractMailer
         $body[] = "";
 
         return implode(PHP_EOL, $body);
-    }
-
-    private function logPrint(mixed $content, string $title): void
-    {
-        if (php_sapi_name() === "cli"){
-            print_r([
-                "title" => $title,
-                "content" => $content
-            ]);
-        }
     }
 
 }

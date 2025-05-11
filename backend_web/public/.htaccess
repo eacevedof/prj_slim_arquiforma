@@ -10,8 +10,8 @@ deny from all
 
   # Redirect to HTTPS
   # RewriteEngine On
-  # RewriteCond %{HTTPS} off
-  # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+  RewriteCond %{HTTPS} off
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
   # Some hosts may require you to use the `RewriteBase` directive.
   # Determine the RewriteBase automatically and set it as environment variable.
@@ -26,7 +26,7 @@ deny from all
   
   # If the above doesn't work you might need to set the `RewriteBase` directive manually, it should be the
   # absolute physical path to the directory that contains this htaccess file.
-  # RewriteBase /
+  RewriteBase /
 
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteCond %{REQUEST_FILENAME} !-f

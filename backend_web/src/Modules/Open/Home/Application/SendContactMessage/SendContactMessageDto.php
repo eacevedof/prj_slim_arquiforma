@@ -62,6 +62,14 @@ final class SendContactMessageDto extends AbstractInputDto
             "subject" => $this->subject,
             "phone" => $this->phone,
             "message" => $this->message,
+
+            "request_ip_address" => $this->requestIpAddress,
+            "request_os" => $this->requestOs,
+            "request_browser" => $this->requestBrowser,
+            "request_browser_version" => $this->requestBrowserVersion,
+            "request_time_zone" => $this->requestTimeZone,
+            "request_language" => $this->requestLanguage,
+            "request_auth_token" => $this->requestAuthToken,
         ];
     }
 

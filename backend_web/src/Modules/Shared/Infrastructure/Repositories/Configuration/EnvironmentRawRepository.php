@@ -12,26 +12,30 @@ final class EnvironmentRawRepository
     private function __construct()
     {
          $this->envVars = [
-             "app_name" => getenv("APP_NAME") ?: "",
+             "app_name" => getenv("APP_NAME") ?: "App Name",
              "environment" => getenv("APP_ENV") ?: EnvironmentEnum::PRODUCTION,
-             "timezone" => getenv("APP_TIMEZONE") ?: "",
-             "base_url" => getenv("APP_BASE_URL") ?: "",
-             "domain" => getenv("APP_DOMAIN") ?: "",
+             "timezone" => getenv("APP_TIMEZONE") ?: "UTC",
+             "base_url" => getenv("APP_BASE_URL") ?: "http://localhost",
+             "domain" => getenv("APP_DOMAIN") ?: "localhost",
 
-             "db_host" => getenv("DB_HOST") ?: "",
-             "db_user" => getenv("DB_USER") ?: "",
-             "db_pass" => getenv("DB_PASS") ?: "",
-             "db_name" => getenv("DB_NAME") ?: "",
+             "db_host" => getenv("APP_DB_HOST") ?: "localhost",
+             "db_user" => getenv("APP_DB_USER") ?: "root",
+             "db_pass" => getenv("APP_DB_PASS") ?: "root",
+             "db_name" => getenv("APP_DB_NAME") ?: "db_xxx",
 
-             "cookie_name" => getenv("COOKIE_NAME") ?: "",
-             "cookie_secure" => filter_var(getenv("COOKIE_SECURE"), FILTER_VALIDATE_BOOLEAN),
-             "cookie_httponly" => filter_var(getenv("COOKIE_HTTPONLY"), FILTER_VALIDATE_BOOLEAN),
+             "cookie_name" => getenv("APP_COOKIE_NAME") ?: "app_cookie_name",
+             "cookie_secure" => filter_var(getenv("APP_COOKIE_SECURE"), FILTER_VALIDATE_BOOLEAN),
+             "cookie_httponly" => filter_var(getenv("APP_COOKIE_HTTPONLY"), FILTER_VALIDATE_BOOLEAN),
 
-             "log_threshold" => (int)(getenv("LOG_THRESHOLD") ?: 0),
-             "log_path" => getenv("LOG_PATH") ?: "",
+             "log_threshold" => (int)(getenv("LOG_THRESHOLD") ?: 4),
+             "log_path" => getenv("APP_LOG_PATH") ?: "",
 
-             "system_path" => getenv("SYSTEM_PATH") ?: "",
-             "error_views_path" => getenv("ERROR_VIEWS_PATH") ?: "",
+             "system_path" => getenv("APP_SYSTEM_PATH") ?: "",
+             "error_views_path" => getenv("APP_ERROR_VIEWS_PATH") ?: "",
+
+            "email_from1" => getenv("APP_EMAIL_FROM1") ?: "",
+            "email_from2" => getenv("APP_EMAIL_FROM2") ?: "",
+            "email_to" => getenv("APP_EMAIL_TO") ?: "",
 
          ];
     }
@@ -41,6 +45,31 @@ final class EnvironmentRawRepository
         if (self::$instance) return self::$instance;
         self::$instance = new self();
         return self::$instance;
+    }
+
+    public function getAppName(): string
+    {
+        return $this->envVars["app_name"] ?? "";
+    }
+
+    public function getEnvironment(): string
+    {
+        return $this->envVars["environment"];
+    }
+
+    public function getBaseUrl(): string
+    {
+        return $this->envVars["base_url"] ?? "";
+    }
+
+    public function getLogPath(): string
+    {
+        return $this->envVars["log_path"] ?? "";
+    }
+
+    public function getTimezone(): string
+    {
+        return $this->envVars["timezone"] ?? "";
     }
 
     public function isLocal(): bool
@@ -56,27 +85,7 @@ final class EnvironmentRawRepository
     public function isLocalOrDevelopment(): bool
     {
         return $this->getEnvironment() === EnvironmentEnum::LOCAL ||
-               $this->getEnvironment() === EnvironmentEnum::DEVELOPMENT;
-    }
-
-    public function getAppName(): string
-    {
-        return $this->envVars["app_name"] ?? "";
-    }
-
-    public function getEnvironment(): string
-    {
-        return $this->envVars["environment"];
-    }
-
-    public function getTimezone(): string
-    {
-        return $this->envVars["timezone"] ?? "";
-    }
-
-    public function getBaseUrl(): string
-    {
-        return $this->envVars["base_url"] ?? "";
+            $this->getEnvironment() === EnvironmentEnum::DEVELOPMENT;
     }
 
     public function getDomain(): string
@@ -122,11 +131,6 @@ final class EnvironmentRawRepository
     public function getLogThreshold(): int
     {
         return $this->envVars["log_threshold"] ?? 0;
-    }
-
-    public function getLogPath(): string
-    {
-        return $this->envVars["log_path"] ?? "";
     }
 
     public function getSystemPath(): string

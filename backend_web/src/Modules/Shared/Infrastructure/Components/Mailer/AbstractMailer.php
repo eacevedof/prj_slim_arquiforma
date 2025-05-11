@@ -4,6 +4,7 @@ namespace App\Modules\Shared\Infrastructure\Components\Mailer;
 
 abstract class AbstractMailer implements MailerInterface
 {
+    protected bool $isHtmlBody = false;
     protected array $headers = [];
     protected string $emailFrom = "";
     protected string $emailFromName = "";
@@ -73,8 +74,19 @@ abstract class AbstractMailer implements MailerInterface
         return $this;
     }
 
-    public function setContent(mixed $mxContent): self
+    public function setBodyHtml(mixed $mxContent): self
     {
+        $this->isHtmlBody = true;
+        $this->content = is_array($mxContent)
+            ? implode(PHP_EOL, $mxContent)
+            : $mxContent;
+
+        return $this;
+    }
+
+    public function setBodyPlain(mixed $mxContent): self
+    {
+        $this->isHtmlBody = false;
         $this->content = is_array($mxContent)
             ? implode(PHP_EOL, $mxContent)
             : $mxContent;
@@ -90,10 +102,7 @@ abstract class AbstractMailer implements MailerInterface
 
     public function getErrors(): array
     {
-        if ($this->isError) {
-            return $this->errors;
-        }
-        return [];
+        return $this->errors;
     }
 
 }

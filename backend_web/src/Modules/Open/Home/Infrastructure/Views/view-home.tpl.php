@@ -66,7 +66,7 @@ $comp = $hasher->getUnpackedToken($dec);
 
 <header id="header-menu" class="bg-white shadow-md sticky top-0 z-50">
     <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-        <a href="https://arquiforma.es/tpl/home.php" class="flex items-center" aria-label="Arquiforma Construcción - Página de inicio">
+        <a href="https://arquiforma.es" class="flex items-center" aria-label="Arquiforma Construcción - Página de inicio">
             <img src="/tpl/assets/images/arq-logo-h.svg" alt="Arquiforma Logo">
         </a>
 
@@ -630,9 +630,9 @@ $comp = $hasher->getUnpackedToken($dec);
                 Contacta con nosotros
             </h2>
             <div class="max-w-3xl mx-auto">
+                <h3 id="h3-error" class="text-center mb-6 hidden" style="color:red">xxx</h3>
                 <form id="form-contact" method="post" action="/contact/send-message"
                     class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
                     <div class="md:col-span-1">
                         <label for="text-name" class="block text-sm font-arqui-poppins-bold text-gray-700 mb-1">Nombre *</label>
                         <input type="text" id="text-name" name="name"
@@ -720,7 +720,17 @@ $comp = $hasher->getUnpackedToken($dec);
 </button>
 
 <script>
-//create a function to move to inition of form
+function showError(message) {
+    const errorElement = document.getElementById('h3-error');
+    errorElement.innerText = message;
+    errorElement.classList.remove('hidden');
+}
+function hideError() {
+    const errorElement = document.getElementById('h3-error');
+    errorElement.innerText = "";
+    errorElement.classList.add('hidden');
+}
+
 function scrollToForm() {
     const hasMessages = <?= $messageHelper->hasMessages() ? "true" : "false" ?>;
     if (!hasMessages) return;
@@ -819,22 +829,39 @@ document.addEventListener('DOMContentLoaded', function() {
 
     contactForm.addEventListener('submit', function(e) {
         e.preventDefault();
+        hideError()
 
-        // Basic form validation
-        const name = document.getElementById('text-name').value;
-        const subject = document.getElementById('text-subject').value;
-        const email = document.getElementById('email').value;
-        const message = document.getElementById('txa-message').value;
-
-        if (!name || !email || !message || !subject) {
-            alert('Por favor, completa todos los campos requeridos.');
+        const name = document.getElementById('text-name').value.trim();
+        if (!name) {
+            showError("El nombre es obligatorio");
+            document.getElementById('text-name').focus()
             return;
         }
 
-        // Email validation
+        const subject = document.getElementById('text-subject').value.trim();
+        if (!subject) {
+            showError("El asunto es obligatorio");
+            document.getElementById('text-subject').focus()
+            return;
+        }
+
+        const email = document.getElementById('email').value.trim();
+        if (!email) {
+            showError("El email es obligatorio");
+            document.getElementById('email').focus()
+            return;
+        }
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
-            alert('Por favor, introduce un email válido.');
+            showError("El email tiene un formato incorrecto");
+            document.getElementById('email').focus()
+            return;
+        }
+
+        const message = document.getElementById('txa-message').value.trim();
+        if (!message) {
+            showError("El mensaje es obligatorio");
+            document.getElementById('txa-message').focus()
             return;
         }
 
