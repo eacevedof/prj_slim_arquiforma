@@ -36,8 +36,8 @@ final class EnvironmentRawRepository
 
             "email_from1" => getenv("APP_EMAIL_FROM1") ?: "",
             "email_from2" => getenv("APP_EMAIL_FROM2") ?: "",
-            "email_to" => getenv("APP_EMAIL_TO") ?: "",
-
+            "email_to1" => getenv("APP_EMAIL_TO1") ?: "",
+            "email_to2" => getenv("APP_EMAIL_TO2") ?: "",
          ];
     }
 
@@ -73,6 +73,24 @@ final class EnvironmentRawRepository
         return $this->envVars["log_path"] ?? "";
     }
 
+
+    public function getEmailFrom1(): string
+    {
+        return $this->envVars["email_from1"] ?? "";
+    }
+
+    public function getEmailTo1(): string
+    {
+        return $this->envVars["email_to1"] ?? "";
+    }
+
+    public function getEmailTo2(): string
+    {
+        return $this->envVars["email_to2"] ?? "";
+    }
+
+
+
     public function getTimezone(): string
     {
         return $this->envVars["timezone"] ?? "";
@@ -81,21 +99,6 @@ final class EnvironmentRawRepository
     public function getDbName(): string
     {
         return $this->envVars["db_name"] ?? "";
-    }
-
-    public function getEmailFrom1(): string
-    {
-        return $this->envVars["email_from1"] ?? "";
-    }
-
-    public function getEmailFrom2(): string
-    {
-        return $this->envVars["email_from2"] ?? "";
-    }
-
-    public function getEmailTo(): string
-    {
-        return $this->envVars["email_to"] ?? "";
     }
 
     public function isLocal(): bool

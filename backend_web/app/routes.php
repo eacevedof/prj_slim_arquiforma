@@ -11,6 +11,7 @@ use Slim\Interfaces\RouteCollectorProxyInterface as Group;
 use App\Slim\Application\Actions\User\ListUsersAction;
 use App\Slim\Application\Actions\User\ViewUserAction;
 
+use App\Modules\Shared\Infrastructure\Enums\RouteEnum;
 use App\Modules\Open\Home\Infrastructure\Controllers\HomeController;
 use App\Modules\Open\Home\Infrastructure\Controllers\ContactController;
 
@@ -26,8 +27,8 @@ return function (App $app) {
         return $response;
     });
     */
-    $app->post("/contact/send-message", [ContactController::class, "sendMessage"]);
-    $app->get("/", HomeController::class);
+    $app->post(RouteEnum::CONTACT->value, [ContactController::class, "sendMessage"]);
+    $app->get(RouteEnum::HOME->value, HomeController::class);
 
     $app->group("/users", function (Group $group) {
         $group->get("", ListUsersAction::class);

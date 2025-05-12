@@ -3,11 +3,12 @@
 /**
  * @var \App\Modules\Shared\Infrastructure\Components\TplReader $this
  */
+use App\Modules\Shared\Infrastructure\Enums\RouteEnum;
 use App\Modules\Shared\Infrastructure\Components\Hasher\Hasher;
 use App\Modules\Shared\Infrastructure\Components\Requester;
-use App\Modules\Shared\Infrastructure\Views\Helpers\MessagesHelper;
 use App\Modules\Shared\Infrastructure\Components\Sessioner;
 use App\Modules\Shared\Infrastructure\Repositories\Configuration\EnvironmentRawRepository;
+use App\Modules\Shared\Infrastructure\Views\Helpers\MessagesHelper;
 
 $form = $form ?? Sessioner::getInstance()->getOnce("form") ?? [];
 
@@ -622,14 +623,13 @@ $token = $hasher->getPackedToken($tokenOrg);
 
     <section id="section-contact" class="bg-gray-100 py-16 md:py-24">
         <div class="container mx-auto px-4">
-            <?= $messageHelper->getMessages() ?>
             <h2 class="font-arqui-roboto-black text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-12">
                 Contacta con nosotros
             </h2>
+            <?= $messageHelper->getMessages() ?>
             <div class="max-w-3xl mx-auto">
                 <h3 id="h3-error" class="text-center mb-6 hidden" style="color:red">xxx</h3>
-                <form id="form-contact" method="post" action="/contact/send-message"
-                    class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <form id="form-contact" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="md:col-span-1">
                         <label for="text-name" class="block text-sm font-arqui-poppins-bold text-gray-700 mb-1">Nombre *</label>
                         <input type="text" id="text-name" name="name"
@@ -728,13 +728,20 @@ function hideError() {
     errorElement.classList.add('hidden');
 }
 
+function configForm() {
+    const form = document.getElementById("form-contact");
+    if (!form) return;
+    form.method = "post";
+    form.action = "<?= RouteEnum::CONTACT->value ?>";
+}
+
 function scrollToForm() {
     const hasMessages = <?= $messageHelper->hasMessages() ? "true" : "false" ?>;
     if (!hasMessages) return;
 
-    const form = document.getElementById('section-contact');
-    if (form) {
-        form.scrollIntoView({ behavior: 'smooth' });
+    const sectionContact = document.getElementById('section-contact');
+    if (sectionContact) {
+        sectionContact.scrollIntoView({ behavior: 'smooth' });
     }
 }
 
@@ -752,8 +759,8 @@ function createTokenField() {
 }
 
 function createTimezoneField() {
-    const form = document.getElementById('form-contact');
-    const tokenFieldId = 'hid-timezone';
+    const form = document.getElementById("form-contact");
+    const tokenFieldId = "hid-timezone";
 
     if (!document.getElementById(tokenFieldId)) {
         const hiddenField = document.createElement('input');
@@ -766,34 +773,33 @@ function createTimezoneField() {
     }
 }
 
+
 document.addEventListener('DOMContentLoaded', function() {
     const buttonHamburger = document.getElementById('button-hamburger');
     const divMobileMenu = document.getElementById('div-mobile-menu');
 
-    buttonHamburger.addEventListener('click', () => {
-        divMobileMenu.classList.toggle('hidden');
-    });
-
+    buttonHamburger.addEventListener("click", () => divMobileMenu.classList.toggle("hidden"));
 
     // Smooth scrolling for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
+    document.querySelectorAll('a[href^="#"]').forEach(anyAnchor => {
+        anyAnchor.addEventListener("click", function(e) {
             e.preventDefault();
 
-            const targetId = this.getAttribute('href');
-            if (targetId === '#') return;
+            const targetId = this.getAttribute("href");
+            if (targetId === "#") return;
 
             const targetElement = document.querySelector(targetId);
-            if (targetElement) {
-                const headerOffset = 80;
-                const elementPosition = targetElement.getBoundingClientRect().top;
-                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+            if (!targetElement) return;
 
-                window.scrollTo({
-                    top: offsetPosition,
-                    behavior: 'smooth'
-                });
-            }
+            const headerOffset = 80;
+            const elementPosition = targetElement.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+            });
+
         });
     });
 
@@ -817,7 +823,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Form validation and submission
+    configForm()
     createTokenField()
     createTimezoneField()
     scrollToForm()
@@ -870,7 +876,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Lazy loading images with Intersection Observer
-    if ('IntersectionObserver' in window) {
+    if ("IntersectionObserver" in window) {
         const imgOptions = {
             threshold: 0.1,
             rootMargin: "0px 0px 200px 0px"
@@ -902,7 +908,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Add animation on scroll
-    if ('IntersectionObserver' in window) {
+    if ("IntersectionObserver" in window) {
         const animateOptions = {
             threshold: 0.1,
             rootMargin: "0px 0px -100px 0px"

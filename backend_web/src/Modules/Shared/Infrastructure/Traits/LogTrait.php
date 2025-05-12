@@ -10,7 +10,9 @@ trait LogTrait
     {
         $now = date("Y-m-d H:i:s");
         $content = [
-            "host_ip" => $this->getServerClientIP()
+            "host_ip" => $this->getServerClientIP(),
+            "method" => $_SERVER["REQUEST_METHOD"] ?? "unknown",
+            "request_uri" => $_SERVER["REQUEST_URI"] ?? "unknown",
         ];
         if ($title) $content[] = $title;
 
@@ -25,7 +27,9 @@ trait LogTrait
     {
         $now = date("Y-m-d H:i:s");
         $content = [
-            "host_ip" => $this->getServerClientIP()
+            "host_ip" => $this->getServerClientIP(),
+            "method" => $_SERVER["REQUEST_METHOD"] ?? "unknown",
+            "request_uri" => $_SERVER["REQUEST_URI"] ?? "unknown",
         ];
         if ($title) $content[] = $title;
 
@@ -40,7 +44,9 @@ trait LogTrait
     {
         $now = date("Y-m-d H:i:s");
         $content = [
-            "host_ip" => $this->getServerClientIP()
+            "host_ip" => $this->getServerClientIP(),
+            "method" => $_SERVER["REQUEST_METHOD"] ?? "unknown",
+            "request_uri" => $_SERVER["REQUEST_URI"] ?? "unknown",
         ];
         if ($title) $content[] = $title;
 
@@ -55,7 +61,9 @@ trait LogTrait
     {
         $now = date("Y-m-d H:i:s");
         $content = [
-            "host_ip" => $this->getServerClientIP()
+            "host_ip" => $this->getServerClientIP(),
+            "method" => $_SERVER["REQUEST_METHOD"] ?? "unknown",
+            "request_uri" => $_SERVER["REQUEST_URI"] ?? "unknown",
         ];
         if ($title) $content[] = $title;
 
