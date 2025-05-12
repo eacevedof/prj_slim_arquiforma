@@ -17,7 +17,7 @@ final class Hasher
 
     public function __construct(array $primitives = [])
     {
-        $this->encryptAlgorithm = $primitives["encryptAlgorithm"] ?? HasherConfigEnum::AES_256_CBC;
+        $this->encryptAlgorithm = $primitives["encryptAlgorithm"] ?? HasherConfigEnum::ALG_AES_256_CBC;
         $this->initializationVector = $primitives["initializationVector"] ?? HasherConfigEnum::INITIALIZATION_VECTOR;
         $this->encryptSalt = $primitives["encryptSalt"] ?? HasherConfigEnum::ENCRYPT_SALT;
         $this->encodeAsRaw = $primitives["isRawData"] ?? HasherConfigEnum::OPENSSL_BASE64;

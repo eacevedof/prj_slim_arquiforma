@@ -5,6 +5,7 @@ namespace App\Modules\Open\Home\Application\SendContactMessage;
 use App\Modules\Shared\Infrastructure\Components\Hasher\Hasher;
 use App\Modules\Shared\Infrastructure\Components\Mailer\Mailer;
 use App\Modules\Shared\Infrastructure\Traits\LogTrait;
+use App\Modules\Shared\Infrastructure\Repositories\Configuration\EnvironmentRawRepository;
 
 use App\Modules\Open\Home\Domain\Exceptions\HomeException;
 
@@ -16,7 +17,7 @@ final readonly class SendContactMessageService
 
     public function __construct(
         private Mailer $mailer,
-        private Hasher $hasher,
+        private EnvironmentRawRepository $environmentRawRepository,
     ) {
 
     }
@@ -53,12 +54,19 @@ final readonly class SendContactMessageService
 
     private function failIfWrongToken(): void
     {
-        if (!$authToken = $this->sendContactMessageDto->getRequestAuthToken())
+        if (!$authToken = $this->sendContactMessageDto->getRequestAuthToken()) {
+            $this->logDebug("empty auth token");
             HomeException::unauthorized("Action is invalid (1)");
+        }
 
-        $token = $this->hasher->getUnpackedToken($authToken);
-        if (!$token)
+        $hasher = Hasher::fromPrimitives([
+            "encryptSalt" => $this->environmentRawRepository->getAppKey(),
+        ]);
+        $token = $hasher->getUnpackedToken($authToken);
+        if (!$token) {
+            $this->logDebug("empty auth token (2)");
             HomeException::unauthorized("Action is invalid (2)");
+        }
 
         if (
             $token["ip"] !== $this->sendContactMessageDto->requestIpAddress() ||
@@ -66,8 +74,10 @@ final readonly class SendContactMessageService
             $token["browser"] !== $this->sendContactMessageDto->getRequestBrowser() ||
             $token["browser_version"] !== $this->sendContactMessageDto->getRequestBrowserVersion() ||
             $token["date"] !== date("Y-m-d")
-        )
+        ) {
+            $this->logDebug("wrong auth token (3)");
             HomeException::unauthorized("Action is invalid (3)");
+        }
 
         $tokenDate = $token["date"];
         $tokenTime = $token["time"];
@@ -75,19 +85,25 @@ final readonly class SendContactMessageService
         $tokenDateTime = new \DateTime("$tokenDate $tokenTime");
         $currentDateTime = new \DateTime();
         $tokenTimeAgo = $tokenDateTime->diff($currentDateTime);
-        if ($tokenTimeAgo->h > 2)
+        if ($tokenTimeAgo->h > 2) {
+            $this->logDebug("expired auth token {$tokenTimeAgo->h}");
             HomeException::unauthorized("Refresh page and try again");
+        }
 
     }
 
     private function sendMessage(): void
     {
         $errors = $this->mailer->setSubject($this->sendContactMessageDto->getSubject())
-            ->setEmailFrom("tfwnoreply@gmail.com")
-            //->addEmailTo($this->sendContactMessageDto->getEmail())
-            ->addEmailTo("eacevedof@gmail.com")
-            ->setSubject($this->sendContactMessageDto->getSubject())
-            ->setBodyPlain($this->sendContactMessageDto->getMessage())
+            ->setEmailFrom($this->environmentRawRepository->getEmailFrom1())
+            ->addEmailTo($this->environmentRawRepository->getEmailTo())
+            ->setSubject("{$this->sendContactMessageDto->getEmail()}: {$this->sendContactMessageDto->getSubject()}")
+            ->setBodyPlain("
+            from: {$this->sendContactMessageDto->getEmail()} 
+            subject: {$this->sendContactMessageDto->getSubject()}
+            message: 
+                {$this->sendContactMessageDto->getMessage()}
+            ")
             ->send()
             ->getErrors();
 

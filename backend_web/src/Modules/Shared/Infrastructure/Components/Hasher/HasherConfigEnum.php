@@ -13,7 +13,7 @@ final readonly class HasherConfigEnum
     public const ALG_AES_256_CBC_HMAC_SHA256 = "AES-256-CBC-HMAC-SHA256";
     public const ALG_AES_256_CTR = "AES-256-CTR";
 
-    public const AES_256_CBC = "AES-256-CBC";
+    public const ALG_AES_256_CBC = "AES-256-CBC";
 
     public const OPENSSL_BASE64 = 0;
     public const OPENSSL_RAW_DATA = 1;

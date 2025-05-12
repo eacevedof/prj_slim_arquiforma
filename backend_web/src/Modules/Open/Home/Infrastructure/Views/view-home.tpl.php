@@ -7,6 +7,7 @@ use App\Modules\Shared\Infrastructure\Components\Hasher\Hasher;
 use App\Modules\Shared\Infrastructure\Components\Requester;
 use App\Modules\Shared\Infrastructure\Views\Helpers\MessagesHelper;
 use App\Modules\Shared\Infrastructure\Components\Sessioner;
+use App\Modules\Shared\Infrastructure\Repositories\Configuration\EnvironmentRawRepository;
 
 $form = $form ?? Sessioner::getInstance()->getOnce("form") ?? [];
 
@@ -14,7 +15,6 @@ $messageHelper = MessagesHelper::fromPrimitives([
     "errors" => [$error ?? ""],
     "success" => [$success ?? ""],
 ]);
-$hasher = Hasher::getInstance();
 $requester = Requester::getInstance();
 
 $tokenOrg = [
@@ -30,13 +30,10 @@ $tokenOrg = [
     "time" => date("H:i:s"),
 ];
 
+$hasher = Hasher::fromPrimitives([
+    "encryptSalt" => EnvironmentRawRepository::getInstance()->getAppKey(),
+]);;
 $token = $hasher->getPackedToken($tokenOrg);
-
-$enc = $hasher->getEncryptedData($token);
-$dec = $hasher->getDecryptedData($enc);
-
-$comp = $hasher->getUnpackedToken($dec);
-//dd( $tokenOrg,"enc",$enc, "dec", $dec, $comp );
 ?>
 <!DOCTYPE html>
 <html lang="es">
