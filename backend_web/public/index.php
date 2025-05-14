@@ -19,7 +19,7 @@ function slimLog($message): void
     $today = date("Y-m-d");
     $logFile = PATH_ROOT . "/logs/slim-$today.log";
     $now = date("H:i:s");
-    $content = "[$now][{$_SERVER["REMOTE_ADDR"]}]\n" . print_r($message, true) . "\n";
+    $content = "[$now][{$_SERVER["REMOTE_ADDR"]}][{$_SERVER["REQUEST_URI"]}][{$_SERVER["REQUEST_METHOD"]}]\n" . print_r($message, true) . "\n";
     file_put_contents($logFile, $content, FILE_APPEND);
 }
 

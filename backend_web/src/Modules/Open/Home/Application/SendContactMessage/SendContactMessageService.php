@@ -96,11 +96,14 @@ final readonly class SendContactMessageService
     {
         $errors = $this->mailer->setSubject($this->sendContactMessageDto->getSubject())
             ->setEmailFrom($this->environmentRawRepository->getEmailFrom1())
-            ->addEmailTo($this->environmentRawRepository->getEmailTo())
+            ->addEmailTo($this->environmentRawRepository->getEmailTo1())
+            ->addEmailBcc($this->environmentRawRepository->getEmailTo2())
             ->setSubject("{$this->sendContactMessageDto->getEmail()}: {$this->sendContactMessageDto->getSubject()}")
             ->setBodyPlain("
             from: {$this->sendContactMessageDto->getEmail()} 
             subject: {$this->sendContactMessageDto->getSubject()}
+            name: {$this->sendContactMessageDto->getName()}
+            phone: {$this->sendContactMessageDto->getPhone()}
             message: 
                 {$this->sendContactMessageDto->getMessage()}
             ")

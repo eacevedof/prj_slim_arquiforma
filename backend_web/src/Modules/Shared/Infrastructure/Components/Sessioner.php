@@ -9,6 +9,7 @@ final class Sessioner
     public function __construct()
     {
         if (self::$isStarted) return;
+        session_save_path(PATH_ROOT . "/cache/sessions");
         self::$isStarted = session_start();
     }
 

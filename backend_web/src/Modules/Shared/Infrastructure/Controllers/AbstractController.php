@@ -6,6 +6,7 @@ use App\Modules\Shared\Infrastructure\Components\TplReader;
 
 use Slim\Psr7\Response as SlimResponse;
 
+use App\Modules\Shared\Infrastructure\Enums\RouteEnum;
 use App\Modules\Shared\Infrastructure\Enums\ResponseCodeEnum;
 use App\Modules\Shared\Infrastructure\Components\Sessioner;
 
@@ -22,20 +23,20 @@ abstract class AbstractController
         return $response;
     }
 
-    protected function redirect(string $locationUrl): SlimResponse
+    protected function redirect(RouteEnum $routeEnum): SlimResponse
     {
-        return (new SlimResponse())->withHeader("Location", $locationUrl)
+        return (new SlimResponse())->withHeader("Location", $routeEnum->value)
             ->withStatus(ResponseCodeEnum::REDIRECTION);
     }
 
-    protected function redirectWithPayload(string $locationUrl, array $payload): SlimResponse
+    protected function redirectWithPayload(RouteEnum $routeEnum, array $payload): SlimResponse
     {
         $sessioner = Sessioner::getInstance();
         foreach ($payload as $key => $value) {
             $sessioner->add($key, $value);
         }
         //dd("session", $_SESSION);
-        return (new SlimResponse())->withHeader("Location", $locationUrl)
+        return (new SlimResponse())->withHeader("Location", $routeEnum->value)
             ->withStatus(ResponseCodeEnum::REDIRECTION);
     }
 
