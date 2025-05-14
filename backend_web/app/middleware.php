@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use Slim\App;
-use App\Slim\Application\Middleware\SessionMiddleware;
 use App\Slim\Infrastructure\Middlewares\HeadersMiddleware;
+use App\Slim\Infrastructure\Middlewares\SessionMiddleware;
+use Slim\App;
 
 return function (App $app) {
     $app->add(SessionMiddleware::class);

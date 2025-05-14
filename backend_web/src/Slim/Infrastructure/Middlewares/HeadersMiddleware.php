@@ -14,9 +14,11 @@ final readonly class HeadersMiddleware implements Middleware
     public function process(Request $request, RequestHandler $handler): Response
     {
         $response = $handler->handle($request);
+
         return $response->withHeader(
             "Strict-Transport-Security",
             "max-age=31536000; includeSubDomains; preload"
         );
+
     }
 }
