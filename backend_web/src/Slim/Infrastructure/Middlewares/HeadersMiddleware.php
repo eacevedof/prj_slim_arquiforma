@@ -14,6 +14,7 @@ final class HeadersMiddleware implements Middleware
     private array $headers = [
         "Strict-Transport-Security" => "max-age=31536000; includeSubDomains; preload",
         "X-Frame-Options" => "SAMEORIGIN",
+        "Content-Security-Policy" => "frame-ancestors 'self';",
         "Set-Cookie" => "example_cookie=value; HttpOnly; SameSite=Strict",
     ];
 
