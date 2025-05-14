@@ -26,6 +26,7 @@ final class HeadersMiddleware implements Middleware
             $this->headers["Set-Cookie"] = "example_cookie=value; Secure; HttpOnly; SameSite=Strict";
         }
 
+        $response = $response->withoutHeader("Server");
         return $this->getResponseWithHeaders($response);
     }
 
