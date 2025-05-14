@@ -131,6 +131,3 @@ try {
 catch (Throwable $ex) {
     slimLog($ex);
 }
-
-
-

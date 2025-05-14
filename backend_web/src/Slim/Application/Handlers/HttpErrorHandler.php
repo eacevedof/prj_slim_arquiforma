@@ -32,7 +32,6 @@ final class HttpErrorHandler extends SlimErrorHandler
     protected function respond(): Response
     {
         $exception = $this->exception;
-
         $errorStatusCode = 500;
         $actionError = new ActionError(
             ActionError::SERVER_ERROR,
@@ -46,7 +45,16 @@ final class HttpErrorHandler extends SlimErrorHandler
             if ($exception instanceof HttpNotFoundException) {
                 $actionError->setType(ActionError::RESOURCE_NOT_FOUND);
             } elseif ($exception instanceof HttpMethodNotAllowedException) {
-                $actionError->setType(ActionError::NOT_ALLOWED);
+                // Verificar si la ruta realmente existe
+                $routeContext = $this->request->getAttribute('route');
+                if ($routeContext === null) {
+                    // Si no existe, tratar como 404
+                    $errorStatusCode = 404;
+                    $actionError->setType(ActionError::RESOURCE_NOT_FOUND);
+                    $actionError->setDescription("Ruta no encontrada");
+                } else {
+                    $actionError->setType(ActionError::NOT_ALLOWED);
+                }
             } elseif ($exception instanceof HttpUnauthorizedException) {
                 $actionError->setType(ActionError::UNAUTHENTICATED);
             } elseif ($exception instanceof HttpForbiddenException) {

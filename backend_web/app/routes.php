@@ -21,12 +21,6 @@ return function (App $app) {
         return $response;
     });
 
-    /*
-    $app->get("/", function (Request $request, Response $response) {
-        $response->getBody()->write("hello world!");
-        return $response;
-    });
-    */
     $app->post(RouteEnum::CONTACT->value, [ContactController::class, "sendMessage"]);
     $app->get(RouteEnum::HOME->value, HomeController::class);
 
