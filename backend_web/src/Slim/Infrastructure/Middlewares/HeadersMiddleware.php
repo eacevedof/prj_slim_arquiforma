@@ -16,14 +16,14 @@ final class HeadersMiddleware implements Middleware
         "Strict-Transport-Security" => "max-age=31536000; includeSubDomains; preload",
         "X-Frame-Options" => "SAMEORIGIN",
         "Content-Security-Policy" => "frame-ancestors 'self';",
-        "Set-Cookie" => "example_cookie=soy value de cook; Secure; HttpOnly; SameSite=Strict",
+        "Set-Cookie" => "demo_key=demo value de cook; Secure; HttpOnly; SameSite=Strict",
     ];
 
     public function process(Request $request, RequestHandler $handler): Response
     {
         $response = $handler->handle($request);
         if ($request->getUri()->getScheme() === "https") {
-            $this->headers["Set-Cookie"] = "example_cookie=value; Secure; HttpOnly; SameSite=Strict";
+            $this->headers["Set-Cookie"] = "demo_key=demo value sec; Secure; HttpOnly; SameSite=Strict";
         }
 
         $response = $response->withoutHeader("Server");
